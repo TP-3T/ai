@@ -1,0 +1,30 @@
+name: ruff and mypy
+
+on: 
+  pull_request:
+    branches: [ ai ]
+  push:
+    branches: [ ai ]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: checkout
+        uses: actions/checkout@v5
+
+      - name: setup
+        uses: actions/setup-python@v5
+        with: 
+          python-version: "3.12"
+          cache: "pip"
+
+      - name: pip 
+        run: pip install .
+
+      - name: ruff
+        run: ruff check .
+
+      - name: mypy
+        run: mypy .

@@ -2,7 +2,7 @@ name: ruff and mypy
 
 on: 
   pull_request:
-    branches: [ ai ]
+    branches: [ main, dev ]
   push:
     branches: [ ai ]
 

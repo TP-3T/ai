@@ -15,9 +15,10 @@ install-dev:
 	@echo Installing dev dependencies ...
 	pip install -e .
 
-# Run
+# Run (likely not needed since modules will be ran individually)
 run:
-	@echo Running project(TODO) ...
+	@echo Running project ...
+	pyenv exec python __init__.py
 
 # Run Linter
 lint:

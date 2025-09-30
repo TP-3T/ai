@@ -73,20 +73,20 @@ Scoop install Instructions: https://scoop.sh/ (see Quickstart section)
   
   - macOS: https://github.com/pyenv/pyenv?tab=readme-ov-file#macos
 
-  ### 3. Install Python 3.13.7 using pyenv:
+  ### 2. Install Python 3.13.7 using pyenv:
 
   ```
   pyenv install 3.13.7
   ```
 
-  ### 2. (Skip this step if using Linux or Unix) - If on Windows, [Install make](#makefile) for the `make` command (if a version of make not already installed)
+  ### 3. (Skip this step if using Linux or Unix) - If on Windows, [Install make](#makefile) for the `make` command (if a version of make not already installed)
 
-  ### 3. In terminal, create a virtual Python environment (venv)
+  ### 4. In terminal, create a virtual Python environment (venv)
   ```
   make venv
   ```
 
-  ### 4. Activate the venv (you will have to do this every time you reopen the project in your IDE)
+  ### 5. Activate the venv (you will have to do this every time you reopen the project in your IDE)
       
   If on macOS/Linux:
 
@@ -100,7 +100,7 @@ Scoop install Instructions: https://scoop.sh/ (see Quickstart section)
   ./.venv/Scripts/activate
   ```
       
-  ### 5. Install dev dependencies
+  ### 6. Install dev dependencies
   ```
   make install-dev
   ```

@@ -1,7 +1,7 @@
 """Main file (might delete this if not needed)."""
 
 def main() -> str:
-  """Prints and returns a greeting."""
+  """Print and return a greeting."""
   greeting: str = "hello"
   print(greeting)
   return greeting

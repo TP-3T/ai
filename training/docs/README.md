@@ -60,7 +60,7 @@ Scoop install Instructions: https://scoop.sh/ (see Quickstart section)
   
   __If using Windows__ - install pyenv-win:
   
-  - Run Windows PowerShell as administrator and and the command:
+  - Run Windows PowerShell as administrator and enter the command:
   ```
   Invoke-WebRequest -UseBasicParsing -Uri "https://raw.githubusercontent.com/pyenv-win/pyenv-win/master/pyenv-win/install-pyenv-win.ps1" -OutFile "./install-pyenv-win.ps1"; &"./install-pyenv-win.ps1"
   ```
@@ -82,6 +82,7 @@ Scoop install Instructions: https://scoop.sh/ (see Quickstart section)
   ### 3. (Skip this step if using Linux or Unix) - If on Windows, [Install make](#makefile) for the `make` command (if a version of make not already installed)
 
   ### 4. In terminal, create a virtual Python environment (venv)
+
   ```
   make venv
   ```

@@ -1,1 +1,1 @@
-"""Train climate prediction model"""
+"""Train climate prediction model."""

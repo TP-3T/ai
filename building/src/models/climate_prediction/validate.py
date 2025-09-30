@@ -1,1 +1,1 @@
-"""Validate climate prediction model"""
+"""Validate climate prediction model."""

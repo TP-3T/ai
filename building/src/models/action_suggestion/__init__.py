@@ -1,1 +1,1 @@
-"""Main file of action suggestion model"""
+"""Main file of action suggestion model."""

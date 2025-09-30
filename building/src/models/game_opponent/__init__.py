@@ -1,1 +1,1 @@
-"""Main file of game opponent model"""
+"""Main file of game opponent model."""

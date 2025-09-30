@@ -1,1 +1,1 @@
-"""Main file of climate prediction model"""
+"""Main file of climate prediction model."""

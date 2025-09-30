@@ -1,10 +1,11 @@
 [project]
-name = ""
+name = "ai_training"
 version = "0.1.0"
-description = ""
+description = "AI training project"
 authors = [
-    {name = "", email = ""},
-    {name = "", email = ""}
+    {name = "Jason L", email = "email1@email.ca"},
+    {name = "Kyle", email = "email2@email.ca"}
+    {name = "Taeyang", email = "email3@email.ca"}
 ]
 dependencies = ["mypy>=1.14.1", "ruff>=0.9.2"]
 requires-python = "==3.12.*"

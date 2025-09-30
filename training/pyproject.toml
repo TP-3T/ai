@@ -8,13 +8,12 @@ authors = [
     {name = "Taeyang", email = "email3@email.ca"},
 ]
 dependencies = ["mypy>=1.14.1", "ruff>=0.9.2"]
-requires-python = "==3.12.*"
+requires-python = "==3.13.*"
 readme = "README.md"
 license = {text = "MIT"}
 
 [tool.mypy]
 #More readings https://mypy.readthedocs.io/en/stable/config_file.html
-python_executable = ".venv/Scripts/python.exe"
 warn_unreachable = true
 warn_return_any = true
 warn_unused_configs = true

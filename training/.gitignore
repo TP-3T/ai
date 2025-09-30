@@ -1,6 +1,9 @@
 # Environment variable file
 .env
 
-# Python virtual environment folder
+# Python virtual environment directory
 venv/
 .venv/
+
+# .egg-info directory (contains package metadata)
+*.egg-info

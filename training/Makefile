@@ -2,39 +2,40 @@
 
 # Default target
 help:
-	@echo Available targets:
-	@echo   help        - Show this help message
-	@echo   install-dev - Install development dependencies
-# 	@echo "  lint        - Run Ruff on all Python files"
-# 	@echo "  test        - Run pytest" - ai team todo after
-	@echo   clean       - Remove Python cache files
-	@echo   venv        - Create virtual environment
+	@echo Available make commands:
+	@echo   make help        	- Show this help message
+	@echo   make install-dev 	- Install development dependencies
+	@echo   make lint        	- Run Ruff on all Python files
+	@echo   make test 		- Run pytest
+	@echo   make clean 		- Remove Python cache files
+	@echo   make venv 		- Create virtual Python environment (requires pyenv to be installed - see README.md in docs)
 
 # Install Dev dependencies
 install-dev:
 	@echo Installing dev dependencies ...
+	pip install -e .
 
 # Run
 run:
-	@echo Running project ...
+	@echo Running project(TODO) ...
 
 # Run Linter
 lint:
-	@echo Running linter ...
+	@echo Running linter (TODO) ...
 
 # Run Test
 test:
-	@echo Running tests ...
+	@echo Running tests (TODO) ...
 
 # Clean
 clean:
 	@echo Removing cached .pyc files ...
 	rm -rf __pycache__
 
-# Create virtual environment
+# Create virtual environment (requires pyenv to be installed)
 venv:
-	@echo Creating virtual environment ...
-	python -m venv venv
-	@echo Virtual environment created. Activate it with the command:
-# 	@echo "source venv/bin/activate  # On macOS/Linux"
-# 	@echo ".\venv\bin\activate   # On Windows"
+	@echo Creating virtual Python environment ...
+	pyenv exec python -m venv .venv
+	@echo Virtual environment created. Activate it with the appropriate command for your OS:
+	@echo "./.venv/Scripts/activate"	# If on Windows
+	@echo "source .venv/bin/activate" 	# If on macOS/Linux

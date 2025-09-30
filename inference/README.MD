@@ -1,0 +1,1 @@
+Seperate Python project will created in this inference folder if we decide to create a remote server.

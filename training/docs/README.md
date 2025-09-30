@@ -22,12 +22,6 @@ Chocolatey install Instructions: https://chocolatey.org/install#individual
     2. Open PowerShell and run: scoop install make
 Scoop install Instructions: https://scoop.sh/ (see Quickstart section)
 
-### MinGW:
-
-    Install MinGW, a collection of development tools for Windows, which includes mingw32-make
-    You might need to rename mingw32-make.exe to make.exe in order to execute it with "make" command instead of "mingw32-make"
-https://www.mingw-w64.org/
-
 ## Commands
 
 ### Install Dev Dependencies

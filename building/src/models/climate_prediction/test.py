@@ -1,1 +1,1 @@
-""""""
+"""Test climate prediction model"""

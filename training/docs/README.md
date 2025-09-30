@@ -8,7 +8,7 @@
 
 The `Makefile` is used for executing common commands.
 
-If you are on Windows, you will need to install a ported version of the `make` command. There are three options to do this:
+If you are on Windows, you will need to install a ported version of the `make` command. There are two options to do this:
 
 ### Chocolatey:
 

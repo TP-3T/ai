@@ -4,10 +4,10 @@ Repository for the AI features
 ## Contributing and Branches:
 
   - There are four types of branches:
-    - feature branches (branched off from ai, and merged back into ai)
+    - feature branches
     - ai
     - dev
-    - ai
+    - main
 
   - The feature branches are for developing seperate features. They should be branched off from the `ai` branch, and then merged back into `ai`
     - Feature branches should follow the format: `ai/<feature-or-scope>`

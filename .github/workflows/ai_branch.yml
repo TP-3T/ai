@@ -7,6 +7,8 @@ on:
     branches: [ ai ]
 
 jobs:
+
+  # Linter for training project
   lint-training:
     runs-on: ubuntu-latest
     defaults:
@@ -33,6 +35,8 @@ jobs:
         run: mypy .
 
   # lint-inference:
+    
+  # Linter for inference project
   #     runs-on: ubuntu-latest
   #     defaults:
   #       run:

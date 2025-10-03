@@ -38,5 +38,5 @@ venv:
 	@echo Creating virtual Python environment ...
 	pyenv exec python -m venv .venv
 	@echo Virtual environment created. Activate it with the appropriate command for your OS:
-	@echo "./.venv/Scripts/activate"	# If on Windows
-	@echo "source .venv/bin/activate" 	# If on macOS/Linux
+	@echo "./.venv/Scripts/activate"	If on Windows
+	@echo "source .venv/bin/activate" If on macOS/Linux

@@ -29,11 +29,6 @@ Scoop install Instructions: https://scoop.sh/ (see Quickstart section)
   make install-dev
   ```
 
-### Run project
-  ```
-  make run
-  ```
-
 ### Run Linter
   ```
   make lint
@@ -105,3 +100,6 @@ Scoop install Instructions: https://scoop.sh/ (see Quickstart section)
   ```
   make install-dev
   ```
+## Running modules in this project
+  (If using VSCode, install the Python extension)
+  - In Pycharm IDE or VSCode, you can click the run button to execute the current module script.

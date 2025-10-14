@@ -131,12 +131,12 @@ climate_dataset: DataFrame = pd.read_csv(CLIMATE_DATASET_FILENAME) # type: ignor
 features: DataFrame = climate_dataset.drop(columns=[YEAR_COL_NAME, SEA_LVL_COL_NAME], axis=COL_AXIS_NUM)
 target:   DataFrame = climate_dataset.filter(like=SEA_LVL_COL_NAME, axis=COL_AXIS_NUM)
 
-# Split the data into training and testing sets (0.75 train size, 0.25 test size) 
+# Split the data into training and testing sets (default - 0.75 train size, 0.25 test size) 
 # Reproducible split of data (not random)
 feat_train, feat_test, target_train, target_test = train_test_split(features, target, random_state=1) # type: ignore
 
 dtrain_regr: DMatrix = xgb.DMatrix(feat_train, target_train)
-dtest_regr:  DMatrix = xgb.DMatrix(feat_train, target_train)
+dtest_regr:  DMatrix = xgb.DMatrix(feat_test, target_test)
 
 # Set hyperparameters
 OBJECTIVE:          str = "reg:squarederror"
@@ -149,21 +149,25 @@ FEAT_SAMPLING_RATE: float = 1.0
 
 params = {
   "objective": OBJECTIVE,
-  "tree_method": "gpu_hist",
   "device": "cuda", # use gpu of device for training
+  "tree_method": "hist",
 }
+
+# Validation sets to view model rmse at current point during training
+evals = [(dtrain_regr, "train"), (dtest_regr, "validation")]
 
 # Train model
 model: Booster = xgb.train(
   params=params,
   dtrain=dtrain_regr,
   num_boost_round=NUM_BOOST_ROUNDS,
+  evals=evals
 )
 
 # Test model on unseen data
 test_data_predictions = model.predict(dtest_regr)
 
 # Compare predictions with the actual data
-rmse = root_mean_squared_error(target_test, test_data_predictions) # type: ignore
+rmse = root_mean_squared_error(target_test, test_data_predictions)
 
 print(f"RMSE of the model: {rmse:.3f}")

@@ -75,7 +75,7 @@
 #       - Each leaf node should be an error correction amount to add to the initial prediction, which results in the predicted target value
 
 # 4. Update the prediction
-#       - New prediction of the target = Previous prediction + (learning_rate * tree_leaf_value)
+#       - New prediction of the target = Initial prediction + (learning_rate * tree_leaf_value)
 
 # 5. Repeat steps 2-4 with updated pseudo-residuals
 #       - Each new tree fixes errors made by the previous trees.
@@ -91,7 +91,7 @@
 #           - Ex. smaller values means each DT prediction has lower contribution to the final result in the ensemble
 #     - Number of trees - number of boosting rounds = number of trees to build in the ensemble
 #     - Max tree depth - the number of levels in each DT (including the leaf level)
-#     - Minimum number of samples per leaf (or min child weight)
+#     - Minimum number of samples per leaf (or min child weight) - minimum sum of instance weights required in a leaf. Prevents a tree from creating leaves with very few samples.
 #     - Subsampling rate - proportion of rows used to train each tree 
 #           - Ex. Each DT is trained on a randomly sampled 70% of the rows (a random 70% of the rows, not the same 70% for every DT)
 #     - Feature sampling rate - proportion of columns (features) used to train each tree
@@ -113,6 +113,7 @@ import pandas as pd
 from pandas import DataFrame
 from sklearn.metrics import root_mean_squared_error
 from sklearn.model_selection import train_test_split # type: ignore
+from sklearn.metrics import r2_score
 import xgboost as xgb
 from xgboost import Booster, DMatrix
 
@@ -141,16 +142,22 @@ dtest_regr:  DMatrix = xgb.DMatrix(feat_test, target_test)
 # Set hyperparameters
 OBJECTIVE:          str = "reg:squarederror"
 LEARNING_RATE:      float = 0.1
-NUM_BOOST_ROUNDS:   int = 100 # same as number of trees
+NUM_BOOST_ROUNDS:   int = 50 # same as number of trees
 MAX_TREE_DEPTH:     int = 3
-MIN_CHILD_WEIGHT:   int = 3
+MIN_CHILD_WEIGHT:   int = 5
 SUBSAMPLING_RATE:   float = 0.8
 FEAT_SAMPLING_RATE: float = 1.0
 
 params = {
-  "objective": OBJECTIVE,
   "device": "cuda", # use gpu of device for training
   "tree_method": "hist",
+
+  "objective": OBJECTIVE,
+  'eta': LEARNING_RATE,
+  'max_depth': MAX_TREE_DEPTH,
+  'min_child_weight': MIN_CHILD_WEIGHT,
+  'subsample': SUBSAMPLING_RATE,
+  'colsample_bytree': FEAT_SAMPLING_RATE,
 }
 
 # Validation sets to view model rmse at current point during training
@@ -168,6 +175,11 @@ model: Booster = xgb.train(
 test_data_predictions = model.predict(dtest_regr)
 
 # Compare predictions with the actual data
-rmse = root_mean_squared_error(target_test, test_data_predictions)
+# (units of rmse are in mm)
+rmse: float = root_mean_squared_error(target_test, test_data_predictions) # type: ignore
+
+# Calculate the "goodness of the fit" / coeff of determination of the model (R^2)
+r2: float = r2_score(target_test, test_data_predictions)
 
 print(f"RMSE of the model: {rmse:.3f}")
+print(f"Goodness of fit: {r2}")

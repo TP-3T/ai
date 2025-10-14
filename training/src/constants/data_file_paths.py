@@ -39,6 +39,15 @@ SEA_LVL_INTERIM_DATA_FILE_NAME: str = os.path.join(
   "interim_sea_level_data.csv"
 )
 
+CLIMATE_DATASET_FILENAME: str = os.path.join(
+  "/", 
+  __ABSOLUTE_PATH_TO_PROJECT_DIR, 
+  "data", 
+  "climate_prediction", 
+  __INTERIM_DATA_DIR_NAME, 
+  "interim_climate_dataset.csv"
+)
+
 # === ACTION SUGGESTION ===
 
 # === GAME OPPONENT ===

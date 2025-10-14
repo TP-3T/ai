@@ -1,4 +1,3 @@
-
 """
 Main file of climate change data processor.
 
@@ -13,7 +12,7 @@ Preprocesses the required raw data files, and creates a dataset file with annual
 Split the data into training, validation, and training sets, using sklearn train_test_split function.
 """
 
-import numpy as np
+# import numpy as np
 import pandas as pd
 from pandas import Series # type: ignore
 from pandas import DataFrame # type: ignore
@@ -67,9 +66,6 @@ def load_data_and_calculate_remaining_sea_level_change_vals():
   MEAN_SEA_LEVEL_ANOMALY_COL_NAME: str = "Mean Sea Level Anomaly" 
 
   mean_sea_lvl_anomaly_df: DataFrame = pd.read_csv(GLOBAL_NOAA_MEAN_ANOMALY_SEA_LEVELS_PATH)  # type: ignore
-
-  # Get all of the rows (:), and the columns from the first to last year of data collection
-  # mean_sea_lvl_anomaly_df: DataFrame = temp_df.loc[:, str(TEMP_FIRST_YEAR_DATA_COLLECTION) : str(TEMP_LAST_YEAR_DATA_COLLECTION)]
 
   # Remove all of the rows except 2015 - 2024
   
@@ -138,5 +134,8 @@ def process_required_sea_level_data_and_create_csv():
   annual_change_in_sea_lvl_df.to_csv(SEA_LVL_INTERIM_DATA_FILE_NAME)
 
 if __name__ == "__main__":
+  """
+  Preprocess climate related data and output to climate-prediction/interim directory.
+  """
   process_required_sea_level_data_and_create_csv()
   # load_and_process_temperature_dataset()

@@ -109,7 +109,6 @@
 
 # =============================================================================
 
-import numpy as np
 import pandas as pd
 from pandas import DataFrame
 from sklearn.metrics import root_mean_squared_error
@@ -142,7 +141,7 @@ dtest_regr:  DMatrix = xgb.DMatrix(feat_train, target_train)
 # Set hyperparameters
 OBJECTIVE:          str = "reg:squarederror"
 LEARNING_RATE:      float = 0.1
-NUM_BOOST_ROUNDS: int = 100 # same as number of trees
+NUM_BOOST_ROUNDS:   int = 100 # same as number of trees
 MAX_TREE_DEPTH:     int = 3
 MIN_CHILD_WEIGHT:   int = 3
 SUBSAMPLING_RATE:   float = 0.8

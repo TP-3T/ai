@@ -121,8 +121,11 @@ import matplotlib.pyplot as plt
 
 from constants.data_file_paths import CLIMATE_DATASET_FILENAME # type: ignore
 
-YEAR_COL_NAME:    str = "Year"
-SEA_LVL_COL_NAME: str = "Average change in global sea level (mm)"
+YEAR: str = "Year"
+CO2: str = "Average CO2 Concentration (ppm)"
+TEMP: str = "Average Global Temperature (deg C)"
+SEA_LVL: str = "Global Average Absolute Sea Level (mm)"
+
 COL_AXIS_NUM = 1
 
 def train_validate_and_test_model():
@@ -132,8 +135,8 @@ def train_validate_and_test_model():
   # Extract required features and target
   # Features: Global avg temperature, global avg CO2
   # Target:   Change in sea level
-  features: DataFrame = climate_dataset.drop(columns=[YEAR_COL_NAME, SEA_LVL_COL_NAME], axis=COL_AXIS_NUM)
-  target:   DataFrame = climate_dataset.filter(like=SEA_LVL_COL_NAME, axis=COL_AXIS_NUM)
+  features: DataFrame = climate_dataset.drop(columns=[YEAR, SEA_LVL], axis=COL_AXIS_NUM)
+  target:   DataFrame = climate_dataset.filter(like=SEA_LVL, axis=COL_AXIS_NUM)
 
   # Split the data into training and testing sets (default - 0.75 train size, 0.25 test size) 
   # Reproducible split of data (not random)
@@ -190,12 +193,6 @@ def train_validate_and_test_model():
 def visualize_dataset():
   # Load climate dataset
   climate_dataset: DataFrame = pd.read_csv(CLIMATE_DATASET_FILENAME) # type: ignore
-
-  # print(climate_dataset)
-  YEAR: str = "Year"
-  TEMP: str = "Average Global Temperature (deg C)"
-  SEA_LVL: str = "Average change in global sea level (mm)"
-  CO2: str = "Average CO2 Concentration (ppm)"
 
   year_col: Series = climate_dataset.loc[:, YEAR]
   temp_col: Series = climate_dataset.loc[:, TEMP]

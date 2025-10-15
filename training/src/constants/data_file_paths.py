@@ -45,7 +45,7 @@ CLIMATE_DATASET_FILENAME: str = os.path.join(
   "data", 
   "climate_prediction", 
   __INTERIM_DATA_DIR_NAME, 
-  "interim_climate_dataset.csv"
+  "interim_climate_dataset_v2.csv"
 )
 
 # === ACTION SUGGESTION ===

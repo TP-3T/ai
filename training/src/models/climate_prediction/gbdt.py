@@ -1,3 +1,8 @@
+"""
+Climate prediction model training using the gradient boosted decision tree algorithm.
+Contains functions to visualize the climate data, as well as perform the model training, validation and testing.
+"""
+
 # Machine Learning (for supervised learning and prediction):
 #   - Training data used is a set of multiple features (X) and one target (Y) (inputs and expected output)
 #   - Each row in a dataset with the features X and the target Y make up one data point
@@ -122,19 +127,44 @@ import matplotlib.pyplot as plt
 from constants.data_file_paths import CLIMATE_DATASET_FILENAME # type: ignore
 
 YEAR: str = "Year"
-CO2: str = "Average CO2 Concentration (ppm)"
-TEMP: str = "Average Global Temperature (deg C)"
+CO2: str = "Global Average CO2 Concentration (ppm)"
+TEMP: str = "Global Average Temperature (deg C)"
 SEA_LVL: str = "Global Average Absolute Sea Level (mm)"
 
 COL_AXIS_NUM = 1
 
-def train_validate_and_test_model():
+def __load_climate_dataset() -> DataFrame:
   # Load climate dataset
   climate_dataset: DataFrame = pd.read_csv(CLIMATE_DATASET_FILENAME) # type: ignore
+  return climate_dataset
+
+def train_validate_and_test_model(climate_dataset: DataFrame):
+  """
+  Train, validate, and test a regression based ML model for climate prediction. ML technique used for training is the gbdt algorithm.
+  The package xgboost is used for the implementation of the above. 
+  Dataset splitting and model evaluation is implemented using the sklearn package.
+  """
+  TEST_PREDICTION_RESULTS_MSG:  str = "Testing Dataset Prediction Results"
+  ACTUAL_SEA_LVL:               str = "Actual Sea level"
+  PREDICTED_SEA_LVL:            str = "Predicted Sea level"
+  RMSE_REPORT_MSG:              str = "RMSE (average error) of the model (units - mm)"
+  COEFF_OF_DET_REPORT_MSG:      str = "Model goodness of fit"
+
+  # Hyperparameters for training
+  OBJECTIVE:          str = "reg:squarederror" # use Mean Squared Error (MSE) loss function
+  LEARNING_RATE:      float = 0.1
+  NUM_BOOST_ROUNDS:   int = 100 # same as number of trees
+  MAX_TREE_DEPTH:     int = 3
+  MIN_CHILD_WEIGHT:   int = 5
+  SUBSAMPLING_RATE:   float = 0.8
+  FEAT_SAMPLING_RATE: float = 1.0
+  TREE_METHOD_SPLIT_ALGORITHM: str = "exact" # what algorithm to use for constructing the individual decision trees - explained in section 3 in the xgboost article explanation
+
+  DEVICE: str = "gpu"
 
   # Extract required features and target
   # Features: Global avg temperature, global avg CO2
-  # Target:   Change in sea level
+  # Target:   Global absolute avg sea level
   features: DataFrame = climate_dataset.drop(columns=[YEAR, SEA_LVL], axis=COL_AXIS_NUM)
   target:   DataFrame = climate_dataset.filter(like=SEA_LVL, axis=COL_AXIS_NUM)
 
@@ -145,19 +175,9 @@ def train_validate_and_test_model():
   dtrain_regr: DMatrix = xgb.DMatrix(feat_train, target_train)
   dtest_regr:  DMatrix = xgb.DMatrix(feat_test, target_test)
 
-  # Set hyperparameters
-  OBJECTIVE:          str = "reg:squarederror"
-  LEARNING_RATE:      float = 0.1
-  NUM_BOOST_ROUNDS:   int = 50 # same as number of trees
-  MAX_TREE_DEPTH:     int = 3
-  MIN_CHILD_WEIGHT:   int = 5
-  SUBSAMPLING_RATE:   float = 0.8
-  FEAT_SAMPLING_RATE: float = 1.0
-
   params = { # type: ignore
-    "device": "cuda", # use gpu of device for training
-    "tree_method": "hist",
-
+    "device": DEVICE, # use gpu of device for training (will switch to cpu if running device has no compatible gpu)
+    "tree_method": TREE_METHOD_SPLIT_ALGORITHM,
     "objective": OBJECTIVE,
     'eta': LEARNING_RATE,
     'max_depth': MAX_TREE_DEPTH,
@@ -166,7 +186,7 @@ def train_validate_and_test_model():
     'colsample_bytree': FEAT_SAMPLING_RATE,
   }
 
-  # Validation sets to view model rmse at current point during training
+  # Validation sets to view the model error amount at different points before training ends
   evals = [(dtrain_regr, "train"), (dtest_regr, "validation")]
 
   # Train model
@@ -178,21 +198,35 @@ def train_validate_and_test_model():
   )
 
   # Test model on unseen data
-  test_data_predictions = model.predict(dtest_regr)
+  target_test_predictions = model.predict(dtest_regr)
 
-  # Compare predictions with the actual data
-  # (units of rmse are in mm)
-  rmse: float = root_mean_squared_error(target_test, test_data_predictions) # type: ignore
+  # Create new dataframe with the columsn being of the test features, actual target, and predicted target
+  test_features_and_target_df: DataFrame = feat_test.copy()
+
+    # Add the actual and predicted cols
+  test_features_and_target_df[ACTUAL_SEA_LVL] = target_test
+  test_features_and_target_df[PREDICTED_SEA_LVL] = target_test_predictions
+
+  print(f"\n{TEST_PREDICTION_RESULTS_MSG}:\n")
+  print(test_features_and_target_df)
+
+  # Compare predictions with the actual data by calculating the average error - using root mean squared error
+  # units of rmse are in mm
+  rmse: float = root_mean_squared_error(target_test, target_test_predictions) # type: ignore
 
   # Calculate the "goodness of the fit" / coeff of determination of the model (R^2)
-  r2: float = r2_score(target_test, test_data_predictions) # type: ignore
+  # (how close the model's predicted values are to the actual)
+  r2: float = r2_score(target_test, target_test_predictions) # type: ignore
 
-  print(f"RMSE of the model: {rmse:.3f}")
-  print(f"Goodness of fit: {r2}")
+  print(f"{RMSE_REPORT_MSG}: {rmse:.5f}")
+  print(f"{COEFF_OF_DET_REPORT_MSG}: {r2:.5f}")
 
-def visualize_dataset():
-  # Load climate dataset
-  climate_dataset: DataFrame = pd.read_csv(CLIMATE_DATASET_FILENAME) # type: ignore
+
+
+def visualize_dataset(climate_dataset: DataFrame):
+  """
+  Visualize the climate dataset (see the output for the different plots).
+  """
 
   year_col: Series = climate_dataset.loc[:, YEAR]
   temp_col: Series = climate_dataset.loc[:, TEMP]
@@ -203,19 +237,19 @@ def visualize_dataset():
   # (figsize adjusts the figure size)
   fig, axs = plt.subplots(4, 4, figsize=(10, 8)) # type: ignore
 
-  # Plot on the first subplot (row 0 col 0)
+  # Plot on row 0 col 0
   axs[0, 0].plot(year_col, temp_col, color='blue')
   axs[0, 0].set_title(f"{YEAR} vs {TEMP}")
   axs[0, 0].set_xlabel(YEAR)
   axs[0, 0].set_ylabel(TEMP)
 
-  # Plot on the second subplot (row 0 col 1)
+  # Plot on row 0 col 1
   axs[0, 1].plot(year_col, sea_lvl_col, color='red')
   axs[0, 1].set_title(f"{YEAR} vs {SEA_LVL}")
   axs[0, 1].set_xlabel(YEAR)
   axs[0, 1].set_ylabel(SEA_LVL)
 
-  # Plot on the third subplot (row 0 col 2)
+  # Plot on row 0 col 2
   axs[0, 2].plot(year_col, co2_col, color='green')
   axs[0, 2].set_title(f"{YEAR} vs {CO2}")
   axs[0, 2].set_xlabel(YEAR)
@@ -223,20 +257,20 @@ def visualize_dataset():
 
   #  ------------------------
 
-  # Plot on the first subplot (row 1 col 0)
+  # Plot on row 1 col 0
   axs[1, 0].plot(co2_col, temp_col, color='blue')
   axs[1, 0].set_title(f"{CO2} vs {TEMP}")
   axs[1, 0].set_xlabel(CO2)
   axs[1, 0].set_ylabel(TEMP)
 
-  # Plot on the second subplot (row 2 col 0)
+  # Plot onrow 2 col 0
   axs[2, 0].plot(co2_col, sea_lvl_col, color='red')
   axs[2, 0].set_title(f"{CO2} vs {SEA_LVL}")
   axs[2, 0].set_xlabel(CO2)
   axs[2, 0].set_ylabel(SEA_LVL)
 
-  # # Plot on the second subplot (row 3 col 0)
-  axs[3, 0].plot(temp_col, sea_lvl_col, color='red')
+  # # Plot on row 3 col 0
+  axs[3, 0].plot(temp_col, sea_lvl_col, color='green')
   axs[3, 0].set_title(f"{TEMP} vs {SEA_LVL}")
   axs[3, 0].set_xlabel(TEMP)
   axs[3, 0].set_ylabel(SEA_LVL)
@@ -244,9 +278,10 @@ def visualize_dataset():
   # Adjust layout to prevent overlapping titles/labels
   plt.tight_layout()
 
-  # Display the figure with all subplots
+  # Display the figure with all the subplots
   plt.show() # type: ignore
 
 if __name__ == "__main__":
-  # train_validate_and_test_model()
-  visualize_dataset()
+  climate_dataset: DataFrame = __load_climate_dataset()
+  train_validate_and_test_model(climate_dataset)
+  visualize_dataset(climate_dataset)

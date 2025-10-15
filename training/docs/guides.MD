@@ -11,3 +11,6 @@ https://www.datacamp.com/tutorial/guide-to-the-gradient-boosting-algorithm
 
 xgboost in Python
 https://www.datacamp.com/tutorial/xgboost-in-python
+
+xgboost ML package article explanation (only the referenced sections that explain some of the parameters, not all of the math stuff)
+https://arxiv.org/pdf/1603.02754

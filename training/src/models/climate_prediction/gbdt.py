@@ -15,7 +15,7 @@ Contains functions to visualize the climate data, as well as perform the model t
 #   - Overview: A machine learning model learns from training data points to generalize for unseen ones
 #     - The model in training makes a prediction of what the target should be
 #     - After making a prediction of the target, the model compares its prediction with the expected target value
-#     - Based on the amount of error it made, it adjusts its "parameters" (basically the model's setting values) to hopefully make a better prediction on the next data point
+#     - Based on the amount of error it made, it adjusts its "parameters" (basically the model's setting values) to hopefully make a better prediction on the next prediction
 #     - The final parameter values after training is what makes up the machine learning model's ability to predict unforeseen data
 #     - Goal is to improve prediction accuracy and minimize the amount of error, by optimizing the model parameters
 
@@ -42,9 +42,9 @@ Contains functions to visualize the climate data, as well as perform the model t
 #   - Differentiate - finding the slope of a line that "touches" the loss function curve at a point
 #   - Differentiation is done to produce a value that can be used to adjust model parameters (an algorithm uses the value to calculate the adjustment amounts)
 
-# Train/Test Split and Generalization:
+# Train/Test Split and Generalization: #TODO
 
-# Bias-Variance Tradeoff:
+# Bias-Variance Tradeoff: #TODO
 
 # Gradient Boosting:
 #   - An ensemble technique in ML
@@ -103,6 +103,12 @@ Contains functions to visualize the climate data, as well as perform the model t
 #       - Each new tree fixes errors made by the previous trees.
 #       - The model gradually improves by correcting mistakes.
 
+# --- During model inference (prediction of real life data): ---
+#       - The data from wherever (one "row" with all of the dataset features except the target variable) 
+#       - gets input into every the trees in the ensemble, and for each it arrives at a leaf node. 
+#       - The leaf node contains the pseudo-residual value, which is the output of that decision tree.
+#       - Then all of the the pseudo-residual results from each DT output are added to the initial prediction to produce a predicted value.
+
 # =============================================================================
 
 # Hyperparameters - model "settings":
@@ -119,6 +125,7 @@ Contains functions to visualize the climate data, as well as perform the model t
 #     - Feature sampling rate - proportion of columns (features) used to train each tree
 #           - Ex. Each DT is trained with a randomly sampled 50% of the features (a random 50% of the columns, not the same 50% for every DT)
 
+#TODO: update these and explain why chose the value for each hyperparameter 
 # objective - Mean Squared Error (MSE) loss function
 # learning rate - 
 # # trees - early stopping
@@ -182,7 +189,7 @@ def train_validate_and_test_model(climate_dataset: DataFrame) -> Booster:
 
   DEVICE: str = "gpu"
 
-  # Extract required features and target
+  # Filter for only the required features and target
   # Features: Global avg temperature, global avg CO2
   # Target:   Global absolute avg sea level
   features: DataFrame = climate_dataset.drop(columns=[YEAR, SEA_LVL], axis=COL_AXIS_NUM)

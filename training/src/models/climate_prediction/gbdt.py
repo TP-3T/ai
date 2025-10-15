@@ -111,11 +111,13 @@
 
 import pandas as pd
 from pandas import DataFrame
+from pandas import Series
 from sklearn.metrics import root_mean_squared_error
 from sklearn.model_selection import train_test_split # type: ignore
 from sklearn.metrics import r2_score
 import xgboost as xgb
 from xgboost import Booster, DMatrix
+import matplotlib.pyplot as plt
 
 from constants.data_file_paths import CLIMATE_DATASET_FILENAME # type: ignore
 
@@ -123,63 +125,131 @@ YEAR_COL_NAME:    str = "Year"
 SEA_LVL_COL_NAME: str = "Average change in global sea level (mm)"
 COL_AXIS_NUM = 1
 
-# Load climate dataset
-climate_dataset: DataFrame = pd.read_csv(CLIMATE_DATASET_FILENAME) # type: ignore
+def train_validate_and_test_model():
+  # Load climate dataset
+  climate_dataset: DataFrame = pd.read_csv(CLIMATE_DATASET_FILENAME) # type: ignore
 
-# Extract required features and target
-# Features: Global avg temperature, global avg CO2
-# Target:   Change in sea level
-features: DataFrame = climate_dataset.drop(columns=[YEAR_COL_NAME, SEA_LVL_COL_NAME], axis=COL_AXIS_NUM)
-target:   DataFrame = climate_dataset.filter(like=SEA_LVL_COL_NAME, axis=COL_AXIS_NUM)
+  # Extract required features and target
+  # Features: Global avg temperature, global avg CO2
+  # Target:   Change in sea level
+  features: DataFrame = climate_dataset.drop(columns=[YEAR_COL_NAME, SEA_LVL_COL_NAME], axis=COL_AXIS_NUM)
+  target:   DataFrame = climate_dataset.filter(like=SEA_LVL_COL_NAME, axis=COL_AXIS_NUM)
 
-# Split the data into training and testing sets (default - 0.75 train size, 0.25 test size) 
-# Reproducible split of data (not random)
-feat_train, feat_test, target_train, target_test = train_test_split(features, target, random_state=1) # type: ignore
+  # Split the data into training and testing sets (default - 0.75 train size, 0.25 test size) 
+  # Reproducible split of data (not random)
+  feat_train, feat_test, target_train, target_test = train_test_split(features, target, random_state=1) # type: ignore
 
-dtrain_regr: DMatrix = xgb.DMatrix(feat_train, target_train)
-dtest_regr:  DMatrix = xgb.DMatrix(feat_test, target_test)
+  dtrain_regr: DMatrix = xgb.DMatrix(feat_train, target_train)
+  dtest_regr:  DMatrix = xgb.DMatrix(feat_test, target_test)
 
-# Set hyperparameters
-OBJECTIVE:          str = "reg:squarederror"
-LEARNING_RATE:      float = 0.1
-NUM_BOOST_ROUNDS:   int = 50 # same as number of trees
-MAX_TREE_DEPTH:     int = 3
-MIN_CHILD_WEIGHT:   int = 5
-SUBSAMPLING_RATE:   float = 0.8
-FEAT_SAMPLING_RATE: float = 1.0
+  # Set hyperparameters
+  OBJECTIVE:          str = "reg:squarederror"
+  LEARNING_RATE:      float = 0.1
+  NUM_BOOST_ROUNDS:   int = 50 # same as number of trees
+  MAX_TREE_DEPTH:     int = 3
+  MIN_CHILD_WEIGHT:   int = 5
+  SUBSAMPLING_RATE:   float = 0.8
+  FEAT_SAMPLING_RATE: float = 1.0
 
-params = {
-  "device": "cuda", # use gpu of device for training
-  "tree_method": "hist",
+  params = { # type: ignore
+    "device": "cuda", # use gpu of device for training
+    "tree_method": "hist",
 
-  "objective": OBJECTIVE,
-  'eta': LEARNING_RATE,
-  'max_depth': MAX_TREE_DEPTH,
-  'min_child_weight': MIN_CHILD_WEIGHT,
-  'subsample': SUBSAMPLING_RATE,
-  'colsample_bytree': FEAT_SAMPLING_RATE,
-}
+    "objective": OBJECTIVE,
+    'eta': LEARNING_RATE,
+    'max_depth': MAX_TREE_DEPTH,
+    'min_child_weight': MIN_CHILD_WEIGHT,
+    'subsample': SUBSAMPLING_RATE,
+    'colsample_bytree': FEAT_SAMPLING_RATE,
+  }
 
-# Validation sets to view model rmse at current point during training
-evals = [(dtrain_regr, "train"), (dtest_regr, "validation")]
+  # Validation sets to view model rmse at current point during training
+  evals = [(dtrain_regr, "train"), (dtest_regr, "validation")]
 
-# Train model
-model: Booster = xgb.train(
-  params=params,
-  dtrain=dtrain_regr,
-  num_boost_round=NUM_BOOST_ROUNDS,
-  evals=evals
-)
+  # Train model
+  model: Booster = xgb.train(
+    params=params,
+    dtrain=dtrain_regr,
+    num_boost_round=NUM_BOOST_ROUNDS,
+    evals=evals
+  )
 
-# Test model on unseen data
-test_data_predictions = model.predict(dtest_regr)
+  # Test model on unseen data
+  test_data_predictions = model.predict(dtest_regr)
 
-# Compare predictions with the actual data
-# (units of rmse are in mm)
-rmse: float = root_mean_squared_error(target_test, test_data_predictions) # type: ignore
+  # Compare predictions with the actual data
+  # (units of rmse are in mm)
+  rmse: float = root_mean_squared_error(target_test, test_data_predictions) # type: ignore
 
-# Calculate the "goodness of the fit" / coeff of determination of the model (R^2)
-r2: float = r2_score(target_test, test_data_predictions)
+  # Calculate the "goodness of the fit" / coeff of determination of the model (R^2)
+  r2: float = r2_score(target_test, test_data_predictions) # type: ignore
 
-print(f"RMSE of the model: {rmse:.3f}")
-print(f"Goodness of fit: {r2}")
+  print(f"RMSE of the model: {rmse:.3f}")
+  print(f"Goodness of fit: {r2}")
+
+def visualize_dataset():
+  # Load climate dataset
+  climate_dataset: DataFrame = pd.read_csv(CLIMATE_DATASET_FILENAME) # type: ignore
+
+  # print(climate_dataset)
+  YEAR: str = "Year"
+  TEMP: str = "Average Global Temperature (deg C)"
+  SEA_LVL: str = "Average change in global sea level (mm)"
+  CO2: str = "Average CO2 Concentration (ppm)"
+
+  year_col: Series = climate_dataset.loc[:, YEAR]
+  temp_col: Series = climate_dataset.loc[:, TEMP]
+  sea_lvl_col: Series = climate_dataset.loc[:, SEA_LVL]
+  co2_col: Series = climate_dataset.loc[:, CO2]
+
+  # Create a figure with a 2x2 grid of subplots
+  # (figsize adjusts the figure size)
+  fig, axs = plt.subplots(4, 4, figsize=(10, 8)) # type: ignore
+
+  # Plot on the first subplot (row 0 col 0)
+  axs[0, 0].plot(year_col, temp_col, color='blue')
+  axs[0, 0].set_title(f"{YEAR} vs {TEMP}")
+  axs[0, 0].set_xlabel(YEAR)
+  axs[0, 0].set_ylabel(TEMP)
+
+  # Plot on the second subplot (row 0 col 1)
+  axs[0, 1].plot(year_col, sea_lvl_col, color='red')
+  axs[0, 1].set_title(f"{YEAR} vs {SEA_LVL}")
+  axs[0, 1].set_xlabel(YEAR)
+  axs[0, 1].set_ylabel(SEA_LVL)
+
+  # Plot on the third subplot (row 0 col 2)
+  axs[0, 2].plot(year_col, co2_col, color='green')
+  axs[0, 2].set_title(f"{YEAR} vs {CO2}")
+  axs[0, 2].set_xlabel(YEAR)
+  axs[0, 2].set_ylabel(CO2)
+
+  #  ------------------------
+
+  # Plot on the first subplot (row 1 col 0)
+  axs[1, 0].plot(co2_col, temp_col, color='blue')
+  axs[1, 0].set_title(f"{CO2} vs {TEMP}")
+  axs[1, 0].set_xlabel(CO2)
+  axs[1, 0].set_ylabel(TEMP)
+
+  # Plot on the second subplot (row 2 col 0)
+  axs[2, 0].plot(co2_col, sea_lvl_col, color='red')
+  axs[2, 0].set_title(f"{CO2} vs {SEA_LVL}")
+  axs[2, 0].set_xlabel(CO2)
+  axs[2, 0].set_ylabel(SEA_LVL)
+
+  # # Plot on the second subplot (row 3 col 0)
+  axs[3, 0].plot(temp_col, sea_lvl_col, color='red')
+  axs[3, 0].set_title(f"{TEMP} vs {SEA_LVL}")
+  axs[3, 0].set_xlabel(TEMP)
+  axs[3, 0].set_ylabel(SEA_LVL)
+
+  # Adjust layout to prevent overlapping titles/labels
+  plt.tight_layout()
+
+  # Display the figure with all subplots
+  plt.show() # type: ignore
+
+if __name__ == "__main__":
+  # train_validate_and_test_model()
+  visualize_dataset()

@@ -3,6 +3,12 @@ Climate prediction model training using the gradient boosted decision tree algor
 Contains functions to visualize the climate data, as well as perform the model training, validation and testing.
 """
 
+#TODO: 
+# - Predict FUTURE climate variables avg glob CO2, avg glob TEMP, avg glob abs SEA_LVL.
+# - Find way to check if the model is overfitting (currently it has a goodness of fit of 0.99)
+
+# (Making notes from research here in case I need to explain the theory in presentation or report)
+
 # Machine Learning (for supervised learning and prediction):
 #   - Training data used is a set of multiple features (X) and one target (Y) (inputs and expected output)
 #   - Each row in a dataset with the features X and the target Y make up one data point
@@ -53,7 +59,7 @@ Contains functions to visualize the climate data, as well as perform the model t
 #   - Supervised learning technique
 #   - Can be used for both regression (predicting continous, numerical values) or classification (predicting discrete categories for data - each category being a class label)
 #   - Each weak learner is trained using all of the rows of the training data
-#   - Each tree uses the features and prediction error, to predict what corrections are needed to be able to 
+#   - Each tree uses the features and prediction error, to predict what corrections are needed
 #   - Trees don’t predict the final answers. Instead they predict how to correct the errors of previous predictions
 
 # Gradient boosted decision tree:
@@ -68,19 +74,30 @@ Contains functions to visualize the climate data, as well as perform the model t
 # Gradient Boosting Algorithm Steps:
  
 # 1. Make an initial prediction
-#       - Often simply the mean of the target values.
-#       - This gives a baseline model for all data points.
+#       - The initial prediction value must be for the target for all of the rows in the dataset
+#       - Often simply the mean of the target values
+#       - This gives a baseline model for all data points (meaning that it is a benchmark, or a minimum performance level)
+#           - Ex. mean(all target values) = 156.2
 
-# 2. Calculate the pseudo-residuals
+# 2. Calculate the pseudo-residuals 
 #       - Pseudo-residual = Observed value - Current prediction
 #       - These represent how much correction each data point needs.
+#       - This is done for every row in the dataset
+#           - Ex. (for one of the many rows)
+#             - Observed value is 117.1
+#             - Predicted value is 156.2
+#             - Obs - Pred = 117.1 - 156.2 = -39.1
 
 # 3. Build a weak learner (decision tree) that will predict these pseudo-residuals (for indirectly predicting the target vlaue)
-#       - Each split from a decision tree node is based on features (ex. CO2 < 301.2)
-#       - Each leaf node should be an error correction amount to add to the initial prediction, which results in the predicted target value
+#       - Each split from a decision tree node is a binary conditional based on a feature value (ex. CO2 < 301.2)
+#       - Each leaf node should be an error correction amount to add to the initial prediction (this amount is one of the pseudo-residuals), which results in the predicted target value
+#           - Ex. of ONE leaf node prediction result value in a single DT: -39.1. This result can be added to the initial prediction (the mean of all of the target values) and that is the predicted value.
+#           - Ex. 156.2 + (-39.1) = 117.1 -> 117.1 is the indirectly predicted value
 
-# 4. Update the prediction
-#       - New prediction of the target = Initial prediction + (learning_rate * tree_leaf_value)
+# 4. Update the prediction to prevent the model from overfitting
+#       - A parameter called the learning rate is used in the calculation of the new prediction to prevent "overfitting" 
+#           Overfitting means that the model learns the too much of the dataset patterns, and becomes unable to generalize its learnings to unforeseen data (low bias, high variance)
+#       - New prediction of the target = Initial prediction + (learning_rate * DT_leaf_node_value)
 
 # 5. Repeat steps 2-4 with updated pseudo-residuals
 #       - Each new tree fixes errors made by the previous trees.
@@ -138,11 +155,14 @@ def __load_climate_dataset() -> DataFrame:
   climate_dataset: DataFrame = pd.read_csv(CLIMATE_DATASET_FILENAME) # type: ignore
   return climate_dataset
 
-def train_validate_and_test_model(climate_dataset: DataFrame):
+
+
+def train_validate_and_test_model(climate_dataset: DataFrame) -> Booster:
   """
   Train, validate, and test a regression based ML model for climate prediction. ML technique used for training is the gbdt algorithm.
   The package xgboost is used for the implementation of the above. 
   Dataset splitting and model evaluation is implemented using the sklearn package.
+  Returns the trained model.
   """
   TEST_PREDICTION_RESULTS_MSG:  str = "Testing Dataset Prediction Results"
   ACTUAL_SEA_LVL:               str = "Actual Sea level"
@@ -201,14 +221,14 @@ def train_validate_and_test_model(climate_dataset: DataFrame):
   target_test_predictions = model.predict(dtest_regr)
 
   # Create new dataframe with the columsn being of the test features, actual target, and predicted target
-  test_features_and_target_df: DataFrame = feat_test.copy()
+  test_features_and_target_df: DataFrame = feat_test.copy() # type: ignore
 
     # Add the actual and predicted cols
   test_features_and_target_df[ACTUAL_SEA_LVL] = target_test
   test_features_and_target_df[PREDICTED_SEA_LVL] = target_test_predictions
 
   print(f"\n{TEST_PREDICTION_RESULTS_MSG}:\n")
-  print(test_features_and_target_df)
+  print(test_features_and_target_df) # type: ignore
 
   # Compare predictions with the actual data by calculating the average error - using root mean squared error
   # units of rmse are in mm
@@ -220,6 +240,8 @@ def train_validate_and_test_model(climate_dataset: DataFrame):
 
   print(f"{RMSE_REPORT_MSG}: {rmse:.5f}")
   print(f"{COEFF_OF_DET_REPORT_MSG}: {r2:.5f}")
+
+  return model
 
 
 

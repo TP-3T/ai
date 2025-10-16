@@ -222,11 +222,11 @@ def train_validate_and_test_model(climate_dataset: DataFrame) -> Booster:
   # Test model on unseen data
   target_test_predictions = model.predict(dtest_regr)
 
-  pred_temps_dict     = [prediction_tuple[PREDICTED_TEMPERATURE_TUPLE_INDEX] for prediction_tuple in target_test_predictions] # type: ignore
-  pred_sea_lvls_dict  = [prediction_tuple[PREDICTED_SEA_LVL_TUPLE_INDEX] for prediction_tuple in target_test_predictions] # type: ignore
+  pred_temps_list     = [prediction_tuple[PREDICTED_TEMPERATURE_TUPLE_INDEX] for prediction_tuple in target_test_predictions] # type: ignore
+  pred_sea_lvls_list  = [prediction_tuple[PREDICTED_SEA_LVL_TUPLE_INDEX] for prediction_tuple in target_test_predictions] # type: ignore
 
-  predicted_temperatures: Series = pd.Series(pred_temps_dict, name=PREDICTED_TEMPERATURE, index=feat_test.index) # type: ignore
-  predicted_sea_lvl:      Series = pd.Series(pred_sea_lvls_dict, name=PREDICTED_SEA_LVL, index=feat_test.index) # type: ignore 
+  predicted_temperatures: Series = pd.Series(pred_temps_list, name=PREDICTED_TEMPERATURE, index=feat_test.index) # type: ignore
+  predicted_sea_lvl:      Series = pd.Series(pred_sea_lvls_list, name=PREDICTED_SEA_LVL, index=feat_test.index) # type: ignore 
 
   # Create new dataframe with just the predicted and actual test targets
   test_features_and_target_df: DataFrame = pd.DataFrame(index=feat_test.index) # type: ignore

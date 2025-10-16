@@ -17,3 +17,6 @@ https://arxiv.org/pdf/1603.02754
 
 xgboost for predicting multiple target variables
 https://xgboosting.com/xgboost-for-multiple-output-regression-with-multi_strategy/
+
+xgboost save model
+https://xgboost.readthedocs.io/en/stable/tutorials/saving_model.html

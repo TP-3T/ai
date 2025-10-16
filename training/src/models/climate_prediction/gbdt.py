@@ -149,11 +149,9 @@ from xgboost import Booster, DMatrix
 import matplotlib.pyplot as plt
 
 from constants.data_file_paths import CLIMATE_DATASET_FILENAME # type: ignore
-from constants.climate_prediction_dataset_cols import CO2, FUTURE_SEA_LVL, FUTURE_TEMP, SEA_LVL, TEMP, YEAR # type: ignore
+from constants.climate_prediction_dataset_cols import CO2, FUTURE_SEA_LVL, FUTURE_TEMP, SEA_LVL, TEMP, YEAR, PREDICTED_TEMPERATURE_TUPLE_INDEX, PREDICTED_SEA_LVL_TUPLE_INDEX # type: ignore
 
 COL_AXIS_NUM = 1
-PREDICTED_TEMPERATURE_TUPLE_INDEX: int = 0
-PREDICTED_SEA_LVL_TUPLE_INDEX: int = 1
 
 TEST_PREDICTION_RESULTS_MSG:  str = "Testing Dataset Prediction Results"
 ACTUAL_SEA_LVL:               str = "Actual Future Sea level (mm)"
@@ -270,7 +268,7 @@ def train_validate_and_test_model(climate_dataset: DataFrame) -> Booster:
   return model
 
 
-
+#TODO: update plots for the updated dataset
 def visualize_dataset(climate_dataset: DataFrame):
   """
   Visualize the climate dataset (see the output for the different plots).

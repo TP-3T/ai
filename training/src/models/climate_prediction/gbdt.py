@@ -334,4 +334,4 @@ if __name__ == "__main__":
   # visualize_dataset(climate_dataset)
   
   # Serialize the model and its learned parameters into json, and store in output directory
-  model.save_model(GBDT_MODEL_FILENAME)
+  # model.save_model(GBDT_MODEL_FILENAME)

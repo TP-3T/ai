@@ -140,14 +140,17 @@ from constants.climate_prediction_dataset_cols import CO2, FUTURE_SEA_LVL, FUTUR
 
 COL_AXIS_NUM = 1
 
-TEST_PREDICTION_RESULTS_MSG:  str = "Testing Dataset Prediction Results"
-ACTUAL_SEA_LVL:               str = "Actual Future Sea level (mm)"
-ACTUAL_TEMPERATURE:           str = "Actual Future Temperature (deg C)"
-PREDICTED_SEA_LVL:            str = "Predicted Sea level (mm)"
-PREDICTED_TEMPERATURE:        str = "Predicted Future Temperature (deg C)"
+TEST_PREDICTION_RESULTS_MSG:      str = "Testing Dataset Prediction Results"
+ACTUAL_SEA_LVL:                   str = "Actual Future Sea level (mm)"
+ACTUAL_TEMPERATURE:               str = "Actual Future Temperature (deg C)"
+PREDICTED_SEA_LVL:                str = "Predicted Sea level (mm)"
+PREDICTED_TEMPERATURE:            str = "Predicted Future Temperature (deg C)"
 
-RMSE_REPORT_MSG:              str = "RMSE (average error) of the model (units - mm)"
-COEFF_OF_DET_REPORT_MSG:      str = "Model goodness of fit"
+RMSE_TEMP_REPORT_MSG:             str = "RMSE (average error) of future temperature predictions (units - deg C)"
+RMSE_SEA_LVL_REPORT_MSG:          str = "RMSE (average error) of future sea level predictions (units - mm)"
+
+COEFF_OF_DET_TEMP_REPORT_MSG:     str = "Model goodness of fit (future temperature)"
+COEFF_OF_DET_SEA_LVL_REPORT_MSG:  str = "Model goodness of fit (future sea level)"
 
 # Hyperparameters for training
 OBJECTIVE:          str = "reg:squarederror" # use Mean Squared Error (MSE) loss function
@@ -220,36 +223,45 @@ def train_validate_and_test_model(climate_dataset: DataFrame) -> Booster:
   )
 
   # Test model on unseen data
+  # target_test_predictions is a numpy array of tuples containing 2 float vals (temperature and sea level)
   target_test_predictions = model.predict(dtest_regr)
 
-  pred_temps_list     = [prediction_tuple[PREDICTED_TEMPERATURE_TUPLE_INDEX] for prediction_tuple in target_test_predictions] # type: ignore
-  pred_sea_lvls_list  = [prediction_tuple[PREDICTED_SEA_LVL_TUPLE_INDEX] for prediction_tuple in target_test_predictions] # type: ignore
+  pred_temps_list:    list[float]  = [prediction_tuple[PREDICTED_TEMPERATURE_TUPLE_INDEX] for prediction_tuple in target_test_predictions] # type: ignore
+  pred_sea_lvls_list: list[float]  = [prediction_tuple[PREDICTED_SEA_LVL_TUPLE_INDEX] for prediction_tuple in target_test_predictions] # type: ignore
 
   predicted_temperatures: Series = pd.Series(pred_temps_list, name=PREDICTED_TEMPERATURE, index=feat_test.index) # type: ignore
   predicted_sea_lvl:      Series = pd.Series(pred_sea_lvls_list, name=PREDICTED_SEA_LVL, index=feat_test.index) # type: ignore 
 
-  # Create new dataframe with just the predicted and actual test targets
+  actual_future_temps:    Series = target_test[FUTURE_TEMP] # type: ignore
+  actual_future_sea_lvls: Series = target_test[FUTURE_SEA_LVL] # type: ignore
+
+    # Create new dataframe with just the predicted and actual test targets
   test_features_and_target_df: DataFrame = pd.DataFrame(index=feat_test.index) # type: ignore
 
     # Add the actual and predicted cols - fix the column assignments
-  test_features_and_target_df[ACTUAL_TEMPERATURE] = target_test[FUTURE_TEMP]
+  test_features_and_target_df[ACTUAL_TEMPERATURE] = actual_future_temps
   test_features_and_target_df[PREDICTED_TEMPERATURE] = predicted_temperatures
-  test_features_and_target_df[ACTUAL_SEA_LVL] = target_test[FUTURE_SEA_LVL]
+  test_features_and_target_df[ACTUAL_SEA_LVL] = actual_future_sea_lvls
   test_features_and_target_df[PREDICTED_SEA_LVL] = predicted_sea_lvl
 
   print(f"\n{TEST_PREDICTION_RESULTS_MSG}:\n")
   print(test_features_and_target_df) # type: ignore
 
-  # Compare predictions with the actual data by calculating the average error - using root mean squared error
-  # units of rmse are in mm
-  rmse: float = root_mean_squared_error(target_test, target_test_predictions) # type: ignore
+  # Model evaluation
 
-  # Calculate the "goodness of the fit" / coeff of determination of the model (R^2)
-  # (how close the model's predicted values are to the actual)
-  r2: float = r2_score(target_test, target_test_predictions) # type: ignore
+    # Compare predictions with the actual data by calculating the average error - using root mean squared error
+  temp_rmse:      float = root_mean_squared_error(actual_future_temps.values, pred_temps_list) # type: ignore
+  sea_level_rmse: float = root_mean_squared_error(actual_future_sea_lvls.values, pred_sea_lvls_list) # type: ignore
 
-  print(f"{RMSE_REPORT_MSG}: {rmse:.5f}")
-  print(f"{COEFF_OF_DET_REPORT_MSG}: {r2:.5f}")
+    # Calculate the "goodness of the fit" / coeff of determination of the model (R^2)
+    # (how close the model's predicted values are to the actual)
+  temp_r2:    float = r2_score(actual_future_temps, pred_temps_list) # type: ignore
+  sea_lvl_r2: float = r2_score(actual_future_sea_lvls, pred_sea_lvls_list) # type: ignore
+
+  print(f"{RMSE_TEMP_REPORT_MSG}: {temp_rmse:.5f}")
+  print(f"{RMSE_SEA_LVL_REPORT_MSG}: {sea_level_rmse:.5f}")
+  print(f"{COEFF_OF_DET_TEMP_REPORT_MSG}: {temp_r2:.5f}")
+  print(f"{COEFF_OF_DET_SEA_LVL_REPORT_MSG}: {sea_lvl_r2:.5f}")
 
   return model
 

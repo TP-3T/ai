@@ -3,10 +3,6 @@ Climate prediction model training using the gradient boosted decision tree algor
 Contains functions to visualize the climate data, as well as perform the model training, validation and testing.
 """
 
-#TODO: 
-# - Predict FUTURE climate variables avg glob CO2, avg glob TEMP, avg glob abs SEA_LVL.
-# - Find way to check if the model is overfitting (currently it has a goodness of fit of 0.99)
-
 # (Making notes from research here in case I need to explain the theory in presentation or report)
 
 # Machine Learning (for supervised learning and prediction):
@@ -124,15 +120,6 @@ Contains functions to visualize the climate data, as well as perform the model t
 #           - Ex. Each DT is trained on a randomly sampled 70% of the rows (a random 70% of the rows, not the same 70% for every DT)
 #     - Feature sampling rate - proportion of columns (features) used to train each tree
 #           - Ex. Each DT is trained with a randomly sampled 50% of the features (a random 50% of the columns, not the same 50% for every DT)
-
-#TODO: update these and explain why chose the value for each hyperparameter 
-# objective - Mean Squared Error (MSE) loss function
-# learning rate - 
-# # trees - early stopping
-# max tree depth - 3
-# min child weight - 3
-# subsampling rate - 0.8
-# feature sampling rate - 1.0 (only have two features)
 
 # will use xgboost since sklearn only supports training using CPU resources
 
@@ -267,7 +254,6 @@ def train_validate_and_test_model(climate_dataset: DataFrame) -> Booster:
   return model
 
 
-#TODO: update plots for the updated dataset
 def visualize_dataset(climate_dataset: DataFrame):
   """
   Visualize the climate dataset (see the output for the different plots).
@@ -277,6 +263,8 @@ def visualize_dataset(climate_dataset: DataFrame):
   temp_col: Series = climate_dataset.loc[:, TEMP]
   sea_lvl_col: Series = climate_dataset.loc[:, SEA_LVL]
   co2_col: Series = climate_dataset.loc[:, CO2]
+  # future_sea_lvl_col: Series = climate_dataset.loc[:, FUTURE_SEA_LVL]
+  # future_temp_col: Series = climate_dataset.loc[:, FUTURE_TEMP]
 
   # Create a figure with a 2x2 grid of subplots
   # (figsize adjusts the figure size)
@@ -319,6 +307,20 @@ def visualize_dataset(climate_dataset: DataFrame):
   axs[3, 0].set_title(f"{TEMP} vs {SEA_LVL}")
   axs[3, 0].set_xlabel(TEMP)
   axs[3, 0].set_ylabel(SEA_LVL)
+  
+  # Future temperature and sea levels
+
+  # # # Plot on row 3 col 1
+  # axs[3, 1].plot(co2_col, future_temp_col, color='green')
+  # axs[3, 1].set_title(f"{CO2} vs {FUTURE_TEMP}")
+  # axs[3, 1].set_xlabel(CO2)
+  # axs[3, 1].set_ylabel(FUTURE_TEMP)
+
+  #   # # Plot on row 3 col 1
+  # axs[3, 2].plot(co2_col, future_sea_lvl_col, color='green')
+  # axs[3, 2].set_title(f"{CO2} vs {FUTURE_SEA_LVL}")
+  # axs[3, 2].set_xlabel(CO2)
+  # axs[3, 2].set_ylabel(FUTURE_SEA_LVL)
 
   # Adjust layout to prevent overlapping titles/labels
   plt.tight_layout()
@@ -329,4 +331,4 @@ def visualize_dataset(climate_dataset: DataFrame):
 if __name__ == "__main__":
   climate_dataset: DataFrame = __load_climate_dataset()
   train_validate_and_test_model(climate_dataset)
-  # visualize_dataset(climate_dataset)
+  visualize_dataset(climate_dataset)

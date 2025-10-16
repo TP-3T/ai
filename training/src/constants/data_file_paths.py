@@ -14,7 +14,7 @@ __INTERIM_DATA_DIR_NAME:  str = "interim"
 
 # --- Raw data ---
 
-#TODO: Update this to include the relevant files for data_processor to produce the interim climate data set (currently the interim dataset is generated using Excel)
+#TODO: Update this to include the relevant files for data_processor to produce the interim climate data set (currently the interim dataset is created with Excel)
 # TEMP_FILE_PATH:     str = os.path.join("/", __ABSOLUTE_PATH_TO_PROJECT_DIR, "data", "climate_prediction", "raw", __TEMP_FILE_NAME)
 # CO2_FILE_PATH:      str = os.path.join("/", __ABSOLUTE_PATH_TO_PROJECT_DIR, "data", "climate_prediction", "raw", __CO2_FILE_NAME)
 # SEA_LVLS_FILE_PATH: str = os.path.join("/", __ABSOLUTE_PATH_TO_PROJECT_DIR, "data", "climate_prediction", "raw", __SEA_LVLS_FILE_NAME)
@@ -37,6 +37,27 @@ SEA_LVL_INTERIM_DATA_FILE_NAME: str = os.path.join(
   "climate_prediction", 
   __INTERIM_DATA_DIR_NAME, 
   "interim_sea_level_data.csv"
+)
+
+CLIMATE_DATASET_FILENAME: str = os.path.join(
+  "/", 
+  __ABSOLUTE_PATH_TO_PROJECT_DIR, 
+  "data", 
+  "climate_prediction", 
+  __INTERIM_DATA_DIR_NAME, 
+  "interim_climate_dataset_v2.csv"
+)
+
+# --- Model Ouput File Names
+
+GBDT_MODEL_FILENAME: str = os.path.join(
+  "/",
+  __ABSOLUTE_PATH_TO_PROJECT_DIR,
+  "src",
+  "models",
+  "climate_prediction",
+  "output",
+  "gbdt_model.json"
 )
 
 # === ACTION SUGGESTION ===

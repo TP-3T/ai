@@ -23,7 +23,7 @@ from pandas import DataFrame # type: ignore
 
 # from data_processing.constants.climate_dataset_columns import TEMP_FIRST_YEAR_DATA_COLLECTION # type: ignore
 # from data_processing.constants.climate_dataset_columns import TEMP_LAST_YEAR_DATA_COLLECTION # type: ignore
-from data_processing.constants.data_file_paths import GLOBAL_NOAA_MEAN_ANOMALY_SEA_LEVELS_PATH, SEA_LVL_INTERIM_DATA_FILE_NAME # type: ignore
+from constants.data_file_paths import GLOBAL_NOAA_MEAN_ANOMALY_SEA_LEVELS_PATH, SEA_LVL_INTERIM_DATA_FILE_NAME # type: ignore
 
 ROW_AXIS_NUM = 0
 COL_AXIS_NUM = 1

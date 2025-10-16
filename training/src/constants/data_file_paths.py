@@ -14,7 +14,7 @@ __INTERIM_DATA_DIR_NAME:  str = "interim"
 
 # --- Raw data ---
 
-#TODO: Update this to include the relevant files for data_processor to produce the interim climate data set (currently the interim dataset is generated using Excel)
+#TODO: Update this to include the relevant files for data_processor to produce the interim climate data set (currently the interim dataset is created with Excel)
 # TEMP_FILE_PATH:     str = os.path.join("/", __ABSOLUTE_PATH_TO_PROJECT_DIR, "data", "climate_prediction", "raw", __TEMP_FILE_NAME)
 # CO2_FILE_PATH:      str = os.path.join("/", __ABSOLUTE_PATH_TO_PROJECT_DIR, "data", "climate_prediction", "raw", __CO2_FILE_NAME)
 # SEA_LVLS_FILE_PATH: str = os.path.join("/", __ABSOLUTE_PATH_TO_PROJECT_DIR, "data", "climate_prediction", "raw", __SEA_LVLS_FILE_NAME)

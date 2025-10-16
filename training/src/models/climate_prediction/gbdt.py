@@ -149,13 +149,35 @@ from xgboost import Booster, DMatrix
 import matplotlib.pyplot as plt
 
 from constants.data_file_paths import CLIMATE_DATASET_FILENAME # type: ignore
-
-YEAR: str = "Year"
-CO2: str = "Global Average CO2 Concentration (ppm)"
-TEMP: str = "Global Average Temperature (deg C)"
-SEA_LVL: str = "Global Average Absolute Sea Level (mm)"
+from constants.climate_prediction_dataset_cols import CO2, FUTURE_SEA_LVL, FUTURE_TEMP, SEA_LVL, TEMP, YEAR # type: ignore
 
 COL_AXIS_NUM = 1
+PREDICTED_TEMPERATURE_TUPLE_INDEX: int = 0
+PREDICTED_SEA_LVL_TUPLE_INDEX: int = 1
+
+TEST_PREDICTION_RESULTS_MSG:  str = "Testing Dataset Prediction Results"
+ACTUAL_SEA_LVL:               str = "Actual Future Sea level (mm)"
+ACTUAL_TEMPERATURE:           str = "Actual Future Temperature (deg C)"
+PREDICTED_SEA_LVL:            str = "Predicted Sea level (mm)"
+PREDICTED_TEMPERATURE:        str = "Predicted Future Temperature (deg C)"
+
+RMSE_REPORT_MSG:              str = "RMSE (average error) of the model (units - mm)"
+COEFF_OF_DET_REPORT_MSG:      str = "Model goodness of fit"
+
+# Hyperparameters for training
+OBJECTIVE:          str = "reg:squarederror" # use Mean Squared Error (MSE) loss function
+LEARNING_RATE:      float = 0.1
+NUM_BOOST_ROUNDS:   int = 100 # same as number of trees
+MAX_TREE_DEPTH:     int = 3
+MIN_CHILD_WEIGHT:   int = 5
+SUBSAMPLING_RATE:   float = 0.8
+FEAT_SAMPLING_RATE: float = 1.0
+TREE_METHOD_SPLIT_ALGORITHM: str = "hist" # what algorithm to use for constructing the individual decision trees - explained in section 3 in the xgboost article explanation
+TREE_OUTPUT_TYPE: str = "multi_output_tree" # multiple targets per decision tree
+
+DEVICE: str = "gpu"
+
+
 
 def __load_climate_dataset() -> DataFrame:
   # Load climate dataset
@@ -171,36 +193,24 @@ def train_validate_and_test_model(climate_dataset: DataFrame) -> Booster:
   Dataset splitting and model evaluation is implemented using the sklearn package.
   Returns the trained model.
   """
-  TEST_PREDICTION_RESULTS_MSG:  str = "Testing Dataset Prediction Results"
-  ACTUAL_SEA_LVL:               str = "Actual Sea level"
-  PREDICTED_SEA_LVL:            str = "Predicted Sea level"
-  RMSE_REPORT_MSG:              str = "RMSE (average error) of the model (units - mm)"
-  COEFF_OF_DET_REPORT_MSG:      str = "Model goodness of fit"
-
-  # Hyperparameters for training
-  OBJECTIVE:          str = "reg:squarederror" # use Mean Squared Error (MSE) loss function
-  LEARNING_RATE:      float = 0.1
-  NUM_BOOST_ROUNDS:   int = 100 # same as number of trees
-  MAX_TREE_DEPTH:     int = 3
-  MIN_CHILD_WEIGHT:   int = 5
-  SUBSAMPLING_RATE:   float = 0.8
-  FEAT_SAMPLING_RATE: float = 1.0
-  TREE_METHOD_SPLIT_ALGORITHM: str = "exact" # what algorithm to use for constructing the individual decision trees - explained in section 3 in the xgboost article explanation
-
-  DEVICE: str = "gpu"
-
-  # Filter for only the required features and target
-  # Features: Global avg temperature, global avg CO2
-  # Target:   Global absolute avg sea level
-  features: DataFrame = climate_dataset.drop(columns=[YEAR, SEA_LVL], axis=COL_AXIS_NUM)
-  target:   DataFrame = climate_dataset.filter(like=SEA_LVL, axis=COL_AXIS_NUM)
+  # Filter columns for both the feature and target dataframes
+  # Features: Current values for:
+  #     - Global avg temperature
+  #     - Global avg CO2
+  #     - Global svg sea level
+  # Target: Future values for:
+  #     - Global avg temperature
+  #     - Global avg CO2
+  #     - Global absolute avg sea level
+  features: DataFrame = climate_dataset.drop(columns=[YEAR, FUTURE_TEMP, FUTURE_SEA_LVL], axis=COL_AXIS_NUM)
+  targets:   DataFrame = climate_dataset.filter(items=[FUTURE_TEMP, FUTURE_SEA_LVL], axis=COL_AXIS_NUM)
 
   # Split the data into training and testing sets (default - 0.75 train size, 0.25 test size) 
   # Reproducible split of data (not random)
-  feat_train, feat_test, target_train, target_test = train_test_split(features, target, random_state=1) # type: ignore
+  feat_train, feat_test, target_train, target_test = train_test_split(features, targets, random_state=1) # type: ignore
 
-  dtrain_regr: DMatrix = xgb.DMatrix(feat_train, target_train)
-  dtest_regr:  DMatrix = xgb.DMatrix(feat_test, target_test)
+  dtrain_regr: DMatrix = xgb.DMatrix(feat_train, label=target_train)
+  dtest_regr:  DMatrix = xgb.DMatrix(feat_test, label=target_test)
 
   params = { # type: ignore
     "device": DEVICE, # use gpu of device for training (will switch to cpu if running device has no compatible gpu)
@@ -211,6 +221,7 @@ def train_validate_and_test_model(climate_dataset: DataFrame) -> Booster:
     'min_child_weight': MIN_CHILD_WEIGHT,
     'subsample': SUBSAMPLING_RATE,
     'colsample_bytree': FEAT_SAMPLING_RATE,
+    'multi_strategy': TREE_OUTPUT_TYPE
   }
 
   # Validation sets to view the model error amount at different points before training ends
@@ -227,12 +238,20 @@ def train_validate_and_test_model(climate_dataset: DataFrame) -> Booster:
   # Test model on unseen data
   target_test_predictions = model.predict(dtest_regr)
 
-  # Create new dataframe with the columsn being of the test features, actual target, and predicted target
-  test_features_and_target_df: DataFrame = feat_test.copy() # type: ignore
+  pred_temps_dict     = [prediction_tuple[PREDICTED_TEMPERATURE_TUPLE_INDEX] for prediction_tuple in target_test_predictions] # type: ignore
+  pred_sea_lvls_dict  = [prediction_tuple[PREDICTED_SEA_LVL_TUPLE_INDEX] for prediction_tuple in target_test_predictions] # type: ignore
 
-    # Add the actual and predicted cols
-  test_features_and_target_df[ACTUAL_SEA_LVL] = target_test
-  test_features_and_target_df[PREDICTED_SEA_LVL] = target_test_predictions
+  predicted_temperatures: Series = pd.Series(pred_temps_dict, name=PREDICTED_TEMPERATURE, index=feat_test.index) # type: ignore
+  predicted_sea_lvl:      Series = pd.Series(pred_sea_lvls_dict, name=PREDICTED_SEA_LVL, index=feat_test.index) # type: ignore 
+
+  # Create new dataframe with just the predicted and actual test targets
+  test_features_and_target_df: DataFrame = pd.DataFrame(index=feat_test.index) # type: ignore
+
+    # Add the actual and predicted cols - fix the column assignments
+  test_features_and_target_df[ACTUAL_TEMPERATURE] = target_test[FUTURE_TEMP]
+  test_features_and_target_df[PREDICTED_TEMPERATURE] = predicted_temperatures
+  test_features_and_target_df[ACTUAL_SEA_LVL] = target_test[FUTURE_SEA_LVL]
+  test_features_and_target_df[PREDICTED_SEA_LVL] = predicted_sea_lvl
 
   print(f"\n{TEST_PREDICTION_RESULTS_MSG}:\n")
   print(test_features_and_target_df) # type: ignore
@@ -313,4 +332,4 @@ def visualize_dataset(climate_dataset: DataFrame):
 if __name__ == "__main__":
   climate_dataset: DataFrame = __load_climate_dataset()
   train_validate_and_test_model(climate_dataset)
-  visualize_dataset(climate_dataset)
+  # visualize_dataset(climate_dataset)

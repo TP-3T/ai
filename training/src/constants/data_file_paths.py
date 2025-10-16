@@ -48,6 +48,18 @@ CLIMATE_DATASET_FILENAME: str = os.path.join(
   "interim_climate_dataset_v2.csv"
 )
 
+# --- Model Ouput File Names
+
+GBDT_MODEL_FILENAME: str = os.path.join(
+  "/",
+  __ABSOLUTE_PATH_TO_PROJECT_DIR,
+  "src",
+  "models",
+  "climate_prediction",
+  "output",
+  "gbdt_model.json"
+)
+
 # === ACTION SUGGESTION ===
 
 # === GAME OPPONENT ===

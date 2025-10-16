@@ -135,7 +135,7 @@ import xgboost as xgb
 from xgboost import Booster, DMatrix
 import matplotlib.pyplot as plt
 
-from constants.data_file_paths import CLIMATE_DATASET_FILENAME # type: ignore
+from constants.data_file_paths import CLIMATE_DATASET_FILENAME, GBDT_MODEL_FILENAME # type: ignore
 from constants.climate_prediction_dataset_cols import CO2, FUTURE_SEA_LVL, FUTURE_TEMP, SEA_LVL, TEMP, YEAR, PREDICTED_TEMPERATURE_TUPLE_INDEX, PREDICTED_SEA_LVL_TUPLE_INDEX # type: ignore
 
 COL_AXIS_NUM = 1
@@ -157,7 +157,7 @@ MAX_TREE_DEPTH:     int = 3
 MIN_CHILD_WEIGHT:   int = 5
 SUBSAMPLING_RATE:   float = 0.8
 FEAT_SAMPLING_RATE: float = 1.0
-TREE_METHOD_SPLIT_ALGORITHM: str = "hist" # what algorithm to use for constructing the individual decision trees - explained in section 3 in the xgboost article explanation
+TREE_METHOD_SPLIT_ALGORITHM: str = "hist" # what algorithm to use for constructing the individual decision trees - explained in section 3 in the xgboost article
 TREE_OUTPUT_TYPE: str = "multi_output_tree" # multiple targets per decision tree
 
 DEVICE: str = "gpu"
@@ -330,5 +330,8 @@ def visualize_dataset(climate_dataset: DataFrame):
 
 if __name__ == "__main__":
   climate_dataset: DataFrame = __load_climate_dataset()
-  train_validate_and_test_model(climate_dataset)
-  visualize_dataset(climate_dataset)
+  model: Booster = train_validate_and_test_model(climate_dataset)
+  # visualize_dataset(climate_dataset)
+  
+  # Serialize the model and its learned parameters into json, and store in output directory
+  model.save_model(GBDT_MODEL_FILENAME)

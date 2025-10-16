@@ -198,7 +198,6 @@ def train_validate_and_test_model(climate_dataset: DataFrame) -> Booster:
   #     - Global svg sea level
   # Target: Future values for:
   #     - Global avg temperature
-  #     - Global avg CO2
   #     - Global absolute avg sea level
   features: DataFrame = climate_dataset.drop(columns=[YEAR, FUTURE_TEMP, FUTURE_SEA_LVL], axis=COL_AXIS_NUM)
   targets:   DataFrame = climate_dataset.filter(items=[FUTURE_TEMP, FUTURE_SEA_LVL], axis=COL_AXIS_NUM)

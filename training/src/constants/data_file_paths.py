@@ -1,4 +1,4 @@
-"""Constants file for raw dataset file paths."""
+"""Constants file for data file paths."""
 
 import os
 
@@ -50,14 +50,24 @@ CLIMATE_DATASET_FILENAME: str = os.path.join(
 
 # --- Model Ouput File Names
 
-GBDT_MODEL_FILENAME: str = os.path.join(
+__GBDT_MODEL_DIR_PATH: list[str] = [
   "/",
   __ABSOLUTE_PATH_TO_PROJECT_DIR,
   "src",
   "models",
   "climate_prediction",
   "output",
-  "gbdt_model.json"
+  "gbdt_model"
+]
+
+GBDT_TEMPERATURE_MODEL_FILENAME: str = os.path.join(
+  *__GBDT_MODEL_DIR_PATH,
+  "gbdt_temperature_model.json"
+)
+
+GBDT_SEA_LEVEL_MODEL_FILENAME: str = os.path.join(
+  *__GBDT_MODEL_DIR_PATH,
+  "gbdt_sea_level_model.json"
 )
 
 # === ACTION SUGGESTION ===

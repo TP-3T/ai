@@ -70,6 +70,16 @@ GBDT_SEA_LEVEL_MODEL_FILENAME: str = os.path.join(
   "gbdt_sea_level_model.json"
 )
 
+GBDT_TEMPERATURE_MODEL_FILENAME_BIN: str = os.path.join(
+  *__GBDT_MODEL_DIR_PATH,
+  "gbdt_temperature_model.bin"
+)
+
+GBDT_SEA_LEVEL_MODEL_FILENAME_BIN: str = os.path.join(
+  *__GBDT_MODEL_DIR_PATH,
+  "gbdt_sea_level_model.bin"
+)
+
 # === ACTION SUGGESTION ===
 
 # === GAME OPPONENT ===

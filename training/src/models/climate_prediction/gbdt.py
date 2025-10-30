@@ -123,6 +123,9 @@ Contains functions to visualize the climate data, as well as perform the model t
 
 # will use xgboost since sklearn only supports training using CPU resources
 
+# Dataset normalization not needed for decision trees DT ensembles, 
+# since tree-based algorithms (DTs, random forests or GBDTs) are not sensitive to the magnitude of the variables
+
 # =============================================================================
 
 import pandas as pd
@@ -135,7 +138,7 @@ import xgboost as xgb
 from xgboost import Booster, DMatrix
 import matplotlib.pyplot as plt
 
-from constants.data_file_paths import CLIMATE_DATASET_FILENAME, GBDT_SEA_LEVEL_MODEL_FILENAME, GBDT_TEMPERATURE_MODEL_FILENAME # type: ignore
+from constants.data_file_paths import CLIMATE_DATASET_FILENAME, GBDT_SEA_LEVEL_MODEL_FILENAME, GBDT_SEA_LEVEL_MODEL_FILENAME_BIN, GBDT_TEMPERATURE_MODEL_FILENAME, GBDT_TEMPERATURE_MODEL_FILENAME_BIN # type: ignore
 from constants.climate_prediction_dataset_cols import CO2, FUTURE_SEA_LVL, FUTURE_TEMP, SEA_LVL, TEMP, YEAR, PREDICTED_TEMPERATURE_TUPLE_INDEX, PREDICTED_SEA_LVL_TUPLE_INDEX # type: ignore
 
 COL_AXIS_NUM = 1
@@ -383,8 +386,8 @@ def main():
   # visualize_dataset(climate_dataset)
   
   # Serialize each model and its learned parameters into json, and store in output directory
-  temp_model.save_model(GBDT_TEMPERATURE_MODEL_FILENAME)
-  sea_lvl_model.save_model(GBDT_SEA_LEVEL_MODEL_FILENAME)
+  temp_model.save_model(GBDT_TEMPERATURE_MODEL_FILENAME_BIN)
+  sea_lvl_model.save_model(GBDT_SEA_LEVEL_MODEL_FILENAME_BIN)
 
 if __name__ == "__main__":
   main()

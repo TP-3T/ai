@@ -60,6 +60,36 @@ GBDT_MODEL_FILENAME: str = os.path.join(
   "gbdt_model.json"
 )
 
+GAM_TEMP_MODEL_FILENAME: str = os.path.join(
+  "/",
+  __ABSOLUTE_PATH_TO_PROJECT_DIR,
+  "src",
+  "models",
+  "climate_prediction",
+  "output",
+  "temperature_gam_model.pkl"
+)
+
+GAM_SEA_LEVEL_MODEL_FILENAME: str = os.path.join(
+  "/",
+  __ABSOLUTE_PATH_TO_PROJECT_DIR,
+  "src",
+  "models",
+  "climate_prediction",
+  "output",
+  "sea_level_gam_model.pkl"
+)
+
+GAM_VISUALIZATION_FILENAME: str = os.path.join(
+  "/",
+  __ABSOLUTE_PATH_TO_PROJECT_DIR,
+  "src",
+  "models",
+  "climate_prediction",
+  "output",
+  "gam_model_performance.png"
+)
+
 # === ACTION SUGGESTION ===
 
 # === GAME OPPONENT ===

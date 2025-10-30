@@ -50,14 +50,23 @@ CLIMATE_DATASET_FILENAME: str = os.path.join(
 
 # --- Model Ouput File Names
 
-__GBDT_MODEL_DIR_PATH: list[str] = [
+__MODEL_OUTPUT_DIR_PATH: list [str] = [
   "/",
   __ABSOLUTE_PATH_TO_PROJECT_DIR,
   "src",
   "models",
   "climate_prediction",
   "output",
+]
+
+__GBDT_MODEL_DIR_PATH: list[str] = [
+  *__MODEL_OUTPUT_DIR_PATH,
   "gbdt_model"
+]
+
+__GAM_MODEL_DIR_PATH: list[str] = [
+  *__MODEL_OUTPUT_DIR_PATH,
+  "gam_model"
 ]
 
 GBDT_TEMPERATURE_MODEL_FILENAME: str = os.path.join(
@@ -81,32 +90,17 @@ GBDT_SEA_LEVEL_MODEL_FILENAME_BIN: str = os.path.join(
 )
 
 GAM_TEMP_MODEL_FILENAME: str = os.path.join(
-  "/",
-  __ABSOLUTE_PATH_TO_PROJECT_DIR,
-  "src",
-  "models",
-  "climate_prediction",
-  "output",
+  *__GAM_MODEL_DIR_PATH,
   "temperature_gam_model.pkl"
 )
 
 GAM_SEA_LEVEL_MODEL_FILENAME: str = os.path.join(
-  "/",
-  __ABSOLUTE_PATH_TO_PROJECT_DIR,
-  "src",
-  "models",
-  "climate_prediction",
-  "output",
+  *__GAM_MODEL_DIR_PATH,
   "sea_level_gam_model.pkl"
 )
 
 GAM_VISUALIZATION_FILENAME: str = os.path.join(
-  "/",
-  __ABSOLUTE_PATH_TO_PROJECT_DIR,
-  "src",
-  "models",
-  "climate_prediction",
-  "output",
+  *__GAM_MODEL_DIR_PATH,
   "gam_model_performance.png"
 )
 

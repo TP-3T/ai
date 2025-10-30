@@ -9,8 +9,8 @@ Predicts both temperature and sea level for the next year.
 import pandas as pd
 from pandas import DataFrame, Series
 import numpy as np
-from pygam import LinearGAM, s
-from sklearn.model_selection import train_test_split
+from pygam import LinearGAM, s # type: ignore
+from sklearn.model_selection import train_test_split # type: ignore
 from sklearn.metrics import mean_squared_error, r2_score, mean_absolute_error
 import matplotlib.pyplot as plt
 import pickle

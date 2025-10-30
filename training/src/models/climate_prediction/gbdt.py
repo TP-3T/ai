@@ -138,8 +138,8 @@ import xgboost as xgb
 from xgboost import Booster, DMatrix
 import matplotlib.pyplot as plt
 
-from constants.data_file_paths import CLIMATE_DATASET_FILENAME, GBDT_SEA_LEVEL_MODEL_FILENAME, GBDT_SEA_LEVEL_MODEL_FILENAME_BIN, GBDT_TEMPERATURE_MODEL_FILENAME, GBDT_TEMPERATURE_MODEL_FILENAME_BIN # type: ignore
-from constants.climate_prediction_dataset_cols import CO2, FUTURE_SEA_LVL, FUTURE_TEMP, SEA_LVL, TEMP, YEAR, PREDICTED_TEMPERATURE_TUPLE_INDEX, PREDICTED_SEA_LVL_TUPLE_INDEX # type: ignore
+from constants.data_file_paths import CLIMATE_DATASET_FILENAME, GBDT_SEA_LEVEL_MODEL_FILENAME, GBDT_TEMPERATURE_MODEL_FILENAME, GBDT_SEA_LEVEL_MODEL_FILENAME_BIN, GBDT_TEMPERATURE_MODEL_FILENAME_BIN # type: ignore
+from constants.climate_prediction_dataset_cols import CO2, FUTURE_SEA_LVL, FUTURE_TEMP, SEA_LVL, TEMP, YEAR  # type: ignore
 
 COL_AXIS_NUM = 1
 
@@ -261,12 +261,6 @@ def train_validate_and_test_model(climate_dataset: DataFrame) -> tuple[Booster, 
   predicted_future_temps    = future_temp_model.predict(test_dmatrix_temp)
   predicted_future_sea_lvls = future_sea_lvl_model.predict(test_dmatrix_sea_lvl)
 
-  # pred_temps_list:    list[float]  = [prediction_tuple[PREDICTED_TEMPERATURE_TUPLE_INDEX] for prediction_tuple in temp_test_predictions] # type: ignore
-  # pred_sea_lvls_list: list[float]  = [prediction_tuple[PREDICTED_SEA_LVL_TUPLE_INDEX] for prediction_tuple in target_test_predictions] # type: ignore
-
-  # predicted_temperatures: Series = pd.Series(pred_temps_list, name=PREDICTED_TEMPERATURE, index=feat_test.index) # type: ignore
-  # predicted_sea_lvl:      Series = pd.Series(pred_sea_lvls_list, name=PREDICTED_SEA_LVL, index=feat_test.index) # type: ignore 
-
   actual_future_temps:    Series = future_temp_test_set[FUTURE_TEMP] # type: ignore
   actual_future_sea_lvls: Series = future_sea_lvl_test_set[FUTURE_SEA_LVL] # type: ignore
 
@@ -386,8 +380,8 @@ def main():
   # visualize_dataset(climate_dataset)
   
   # Serialize each model and its learned parameters into json, and store in output directory
-  # temp_model.save_model(GBDT_TEMPERATURE_MODEL_FILENAME_BIN)
-  # sea_lvl_model.save_model(GBDT_SEA_LEVEL_MODEL_FILENAME_BIN)
+  temp_model.save_model(GBDT_TEMPERATURE_MODEL_FILENAME_BIN)
+  sea_lvl_model.save_model(GBDT_SEA_LEVEL_MODEL_FILENAME_BIN)
 
 if __name__ == "__main__":
   main()

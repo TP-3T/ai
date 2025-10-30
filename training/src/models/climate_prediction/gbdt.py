@@ -386,8 +386,8 @@ def main():
   # visualize_dataset(climate_dataset)
   
   # Serialize each model and its learned parameters into json, and store in output directory
-  temp_model.save_model(GBDT_TEMPERATURE_MODEL_FILENAME_BIN)
-  sea_lvl_model.save_model(GBDT_SEA_LEVEL_MODEL_FILENAME_BIN)
+  # temp_model.save_model(GBDT_TEMPERATURE_MODEL_FILENAME_BIN)
+  # sea_lvl_model.save_model(GBDT_SEA_LEVEL_MODEL_FILENAME_BIN)
 
 if __name__ == "__main__":
   main()

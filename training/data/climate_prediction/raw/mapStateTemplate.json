@@ -1,0 +1,102 @@
+[
+  {
+    "map_id": 2,
+    "world_state_id": 2,
+    "steam_id": "0:0:1129392",
+    "map_name": "de_dust2",
+    "world_state": {
+      "world_state_id": 2,
+      "pollution": 67,
+      "temperature": 25,
+      "year": 1900,
+      "sea_level": 3
+    },
+    "map_tiles": [
+      {
+        "map_id": 2,
+        "tile_data_id": 1,
+        "feature": 0,
+        "y_coord": 0,
+        "x_coord": 0,
+        "owner": 1,
+        "label": "spawn",
+        "tile_data": {
+          "tile_data_id": 1,
+          "tile_type": 1,
+          "elevation": 8
+        }
+      },
+      {
+        "map_id": 2,
+        "tile_data_id": 2,
+        "feature": 1,
+        "y_coord": 0,
+        "x_coord": 1,
+        "owner": 1,
+        "label": null,
+        "tile_data": {
+          "tile_data_id": 2,
+          "tile_type": 2,
+          "elevation": 3
+        }
+      },
+      {
+        "map_id": 2,
+        "tile_data_id": 3,
+        "feature": 2,
+        "y_coord": 1,
+        "x_coord": 0,
+        "owner": 1,
+        "label": "hill",
+        "tile_data": {
+          "tile_data_id": 3,
+          "tile_type": 3,
+          "elevation": 10
+        }
+      }
+    ]
+  },
+  {
+    "map_id": 3,
+    "world_state_id": 3,
+    "steam_id": "0:0:68757",
+    "map_name": "New Test Map",
+    "world_state": {
+      "world_state_id": 3,
+      "pollution": 100,
+      "temperature": 30,
+      "year": 2026,
+      "sea_level": 15
+    },
+    "map_tiles": [
+      {
+        "map_id": 3,
+        "tile_data_id": 1,
+        "feature": 0,
+        "y_coord": 0,
+        "x_coord": 0,
+        "owner": 1,
+        "label": "base",
+        "tile_data": {
+          "tile_data_id": 1,
+          "tile_type": 1,
+          "elevation": 8
+        }
+      },
+      {
+        "map_id": 3,
+        "tile_data_id": 2,
+        "feature": 1,
+        "y_coord": 0,
+        "x_coord": 1,
+        "owner": 1,
+        "label": null,
+        "tile_data": {
+          "tile_data_id": 2,
+          "tile_type": 2,
+          "elevation": 3
+        }
+      }
+    ]
+  }
+]

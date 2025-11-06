@@ -143,7 +143,7 @@ from xgboost import Booster, DMatrix
 import matplotlib.pyplot as plt
 from memory_profiler import profile # type: ignore
 
-from constants.data_file_paths import CLIMATE_DATASET_V3_FILENAME, GBDT_SEA_LEVEL_MODEL_FILENAME, GBDT_TEMPERATURE_MODEL_FILENAME, GBDT_SEA_LEVEL_MODEL_FILENAME_BIN, GBDT_TEMPERATURE_MODEL_FILENAME_BIN # type: ignore
+from constants.data_file_paths import CLIMATE_DATASET_V3_FILENAME, GBDT_SEA_LEVEL_MODEL_FILEPATH_JSON, GBDT_TEMPERATURE_MODEL_FILEPATH_JSON # type: ignore
 from constants.climate_prediction_dataset_v3_cols import CO2, FUTURE_SEA_LVL, FUTURE_TEMP, SEA_LVL, TEMP, YEAR  # type: ignore
 
 COL_AXIS_NUM = 1
@@ -173,7 +173,8 @@ TREE_METHOD_SPLIT_ALGORITHM: str = "exact" # what algorithm to use for construct
 
 DEVICE: str = "gpu"
 
-
+# for accessing the training data
+X_train: DataFrame
 
 def __load_climate_dataset() -> DataFrame:
   # Load climate dataset
@@ -189,6 +190,10 @@ def __split_dataset_into_train_test_validation(
     # Split the data into training and testing sets (default - 0.75 train size, 0.25 test size) 
     # Reproducible split of data (not random)
     feat_train, feat_test, target_train, target_test = train_test_split(features, target, random_state=1) # type: ignore
+
+    # set X_train value (used when converting model to onnx format) 
+    global X_train
+    X_train = feat_train # type: ignore
 
     # data is independent vars (inputs), label is dependent vars (expected outputs)
     train_data_matrix: DMatrix = xgb.DMatrix(feat_train, label=target_train)
@@ -429,17 +434,10 @@ def visualize_dataset(climate_dataset: DataFrame):
   # Display the figure with all the subplots
   plt.show() # type: ignore
 
-def main():
+def run_gbdt() -> tuple[tuple[Booster, Booster], DataFrame]:
   climate_dataset:  DataFrame = __load_climate_dataset()
   models:           tuple[Booster, Booster] = train_validate_and_test_model(climate_dataset)
-  temp_model:       Booster = models[0]
-  sea_lvl_model:    Booster = models[1]
+  return (models, X_train)
 
-  # visualize_dataset(climate_dataset)
-  
-  # Serialize each model and its learned parameters into json, and store in output directory
-  # temp_model.save_model(GBDT_TEMPERATURE_MODEL_FILENAME_BIN)
-  # sea_lvl_model.save_model(GBDT_SEA_LEVEL_MODEL_FILENAME_BIN)
-
-if __name__ == "__main__":
-  main()
+# if __name__ == "__main__":
+#   run_gbdt()

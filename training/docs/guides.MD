@@ -20,3 +20,7 @@ https://xgboosting.com/xgboost-for-multiple-output-regression-with-multi_strateg
 
 xgboost save model
 https://xgboost.readthedocs.io/en/stable/tutorials/saving_model.html
+
+onnxmltools to convert model to onnx format
+https://onnx.ai/sklearn-onnx/auto_tutorial/plot_gexternal_xgboost.html
+https://github.com/onnx/onnxmltools

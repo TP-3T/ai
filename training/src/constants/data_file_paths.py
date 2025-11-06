@@ -78,24 +78,29 @@ __GAM_MODEL_DIR_PATH: list[str] = [
   "gam_model"
 ]
 
-GBDT_TEMPERATURE_MODEL_FILENAME: str = os.path.join(
+__GBDT_TEMPERATURE_MODEL_FILENAME:  str = "gbdt_temperature_model"
+__GBDT_SEA_LEVEL_MODEL_FILENAME:    str = "gbdt_sea_level_model"
+
+GBDT_TEMPERATURE_MODEL_FILEPATH_JSON: str = os.path.join(
   *__GBDT_MODEL_DIR_PATH,
-  "gbdt_temperature_model.json"
+  f"{__GBDT_TEMPERATURE_MODEL_FILENAME}.json"
 )
 
-GBDT_SEA_LEVEL_MODEL_FILENAME: str = os.path.join(
+GBDT_SEA_LEVEL_MODEL_FILEPATH_JSON: str = os.path.join(
   *__GBDT_MODEL_DIR_PATH,
-  "gbdt_sea_level_model.json"
+  f"{__GBDT_SEA_LEVEL_MODEL_FILENAME}.json"
 )
 
-GBDT_TEMPERATURE_MODEL_FILENAME_BIN: str = os.path.join(
+GBDT_TEMPERATURE_MODEL_FILEPATH_ONNX: str = os.path.join(
   *__GBDT_MODEL_DIR_PATH,
-  "gbdt_temperature_model.bin"
+  "onnx_format",
+  f"{__GBDT_TEMPERATURE_MODEL_FILENAME}.onnx"
 )
 
-GBDT_SEA_LEVEL_MODEL_FILENAME_BIN: str = os.path.join(
+GBDT_SEA_LEVEL_MODEL_FILEPATH_ONNX: str = os.path.join(
   *__GBDT_MODEL_DIR_PATH,
-  "gbdt_sea_level_model.bin"
+  "onnx_format",
+  f"{__GBDT_SEA_LEVEL_MODEL_FILENAME}.onnx"
 )
 
 GAM_TEMP_MODEL_FILENAME: str = os.path.join(

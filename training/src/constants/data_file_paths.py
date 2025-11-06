@@ -30,14 +30,14 @@ GLOBAL_NOAA_MEAN_ANOMALY_SEA_LEVELS_PATH: str = os.path.join(
 
 # --- Interim data ---
 
-SEA_LVL_INTERIM_DATA_FILE_NAME: str = os.path.join(
-  "/", 
-  __ABSOLUTE_PATH_TO_PROJECT_DIR, 
-  "data", 
-  "climate_prediction", 
-  __INTERIM_DATA_DIR_NAME, 
-  "interim_sea_level_data.csv"
-)
+# SEA_LVL_INTERIM_DATA_FILE_NAME: str = os.path.join(
+#   "/", 
+#   __ABSOLUTE_PATH_TO_PROJECT_DIR, 
+#   "data", 
+#   "climate_prediction", 
+#   __INTERIM_DATA_DIR_NAME, 
+#   "interim_sea_level_data.csv"
+# )
 
 CLIMATE_DATASET_FILENAME: str = os.path.join(
   "/", 
@@ -46,6 +46,15 @@ CLIMATE_DATASET_FILENAME: str = os.path.join(
   "climate_prediction", 
   __INTERIM_DATA_DIR_NAME, 
   "interim_climate_dataset_v2.csv"
+)
+
+CLIMATE_DATASET_V3_FILENAME: str = os.path.join(
+  "/", 
+  __ABSOLUTE_PATH_TO_PROJECT_DIR, 
+  "data", 
+  "climate_prediction", 
+  __INTERIM_DATA_DIR_NAME, 
+  "interim_climate_dataset_v3.csv"
 )
 
 # --- Model Ouput File Names

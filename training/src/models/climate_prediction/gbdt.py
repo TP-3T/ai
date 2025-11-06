@@ -128,6 +128,10 @@ Contains functions to visualize the climate data, as well as perform the model t
 
 # =============================================================================
 
+import cProfile
+import pstats
+import time
+import psutil
 import pandas as pd
 from pandas import DataFrame
 from pandas import Series
@@ -137,9 +141,10 @@ from sklearn.metrics import r2_score
 import xgboost as xgb
 from xgboost import Booster, DMatrix
 import matplotlib.pyplot as plt
+from memory_profiler import profile # type: ignore
 
-from constants.data_file_paths import CLIMATE_DATASET_FILENAME, GBDT_SEA_LEVEL_MODEL_FILENAME, GBDT_TEMPERATURE_MODEL_FILENAME, GBDT_SEA_LEVEL_MODEL_FILENAME_BIN, GBDT_TEMPERATURE_MODEL_FILENAME_BIN # type: ignore
-from constants.climate_prediction_dataset_cols import CO2, FUTURE_SEA_LVL, FUTURE_TEMP, SEA_LVL, TEMP, YEAR  # type: ignore
+from constants.data_file_paths import CLIMATE_DATASET_V3_FILENAME, GBDT_SEA_LEVEL_MODEL_FILENAME, GBDT_TEMPERATURE_MODEL_FILENAME, GBDT_SEA_LEVEL_MODEL_FILENAME_BIN, GBDT_TEMPERATURE_MODEL_FILENAME_BIN # type: ignore
+from constants.climate_prediction_dataset_v3_cols import CO2, FUTURE_SEA_LVL, FUTURE_TEMP, SEA_LVL, TEMP, YEAR  # type: ignore
 
 COL_AXIS_NUM = 1
 
@@ -172,7 +177,7 @@ DEVICE: str = "gpu"
 
 def __load_climate_dataset() -> DataFrame:
   # Load climate dataset
-  climate_dataset: DataFrame = pd.read_csv(CLIMATE_DATASET_FILENAME) # type: ignore
+  climate_dataset: DataFrame = pd.read_csv(CLIMATE_DATASET_V3_FILENAME) # type: ignore
   return climate_dataset
 
 
@@ -185,7 +190,7 @@ def __split_dataset_into_train_test_validation(
     # Reproducible split of data (not random)
     feat_train, feat_test, target_train, target_test = train_test_split(features, target, random_state=1) # type: ignore
 
-    # data is independent vars (expected inputs), label is dependent vars (expected outputs)
+    # data is independent vars (inputs), label is dependent vars (expected outputs)
     train_data_matrix: DMatrix = xgb.DMatrix(feat_train, label=target_train)
     test_data_matrix:  DMatrix = xgb.DMatrix(feat_test, label=target_test)
 
@@ -212,6 +217,59 @@ def __train_model(
     print("")
 
     return model
+
+
+
+@profile # Total RAM performance testing for inference
+def __perform_model_prediction(
+  future_temp_model: Booster, 
+  future_sea_lvl_model: Booster, 
+  test_dmatrix_temp: DMatrix, 
+  test_dmatrix_sea_lvl: DMatrix
+):
+  """
+  Model prediction
+  """
+  # CPU usage monitoring setup
+  cpu_percent_start = psutil.cpu_percent(interval=None)
+  start_time = time.time()
+  
+  # Total Time performance testing for inference
+  profiler = cProfile.Profile()
+  profiler.enable()
+
+  # Test model on unseen data (the test data)
+  # each is a 1D numpy array
+  predicted_future_temps    = future_temp_model.predict(test_dmatrix_temp)
+  predicted_future_sea_lvls = future_sea_lvl_model.predict(test_dmatrix_sea_lvl)
+
+  profiler.disable()
+  
+  # CPU usage monitoring results
+  end_time = time.time()
+  cpu_percent_end = psutil.cpu_percent(interval=None)
+  execution_time = end_time - start_time
+
+  # System Resource Usage Report
+  print(f"\n=== Prediction Performance Metrics ===")
+  print(f"Prediction execution time: {execution_time:.6f} seconds")
+  print(f"CPU usage during prediction: {cpu_percent_end:.2f}%")
+  print(f"Average CPU usage: {(cpu_percent_start + cpu_percent_end) / 2:.2f}%")
+
+  # Create a Stats object to load and print out data stored in profiler object 
+  stats = pstats.Stats(profiler)
+
+  # Strip directory information
+  stats.strip_dirs()
+
+  # Sort by cumulative time and show top 10 functions (including subcalls)
+  stats.sort_stats('cumulative')
+  print("\n=== Time Profile (Top 10 functions by cumulative time) ===")
+  stats.print_stats(10)
+
+
+
+  return (predicted_future_temps, predicted_future_sea_lvls)
 
 
 
@@ -258,8 +316,7 @@ def train_validate_and_test_model(climate_dataset: DataFrame) -> tuple[Booster, 
 
   # Test model on unseen data (the test data)
     # each is a 1D numpy array
-  predicted_future_temps    = future_temp_model.predict(test_dmatrix_temp)
-  predicted_future_sea_lvls = future_sea_lvl_model.predict(test_dmatrix_sea_lvl)
+  (predicted_future_temps, predicted_future_sea_lvls) = __perform_model_prediction(future_temp_model, future_sea_lvl_model, test_dmatrix_temp, test_dmatrix_sea_lvl)
 
   actual_future_temps:    Series = future_temp_test_set[FUTURE_TEMP] # type: ignore
   actual_future_sea_lvls: Series = future_sea_lvl_test_set[FUTURE_SEA_LVL] # type: ignore
@@ -377,6 +434,7 @@ def main():
   models:           tuple[Booster, Booster] = train_validate_and_test_model(climate_dataset)
   temp_model:       Booster = models[0]
   sea_lvl_model:    Booster = models[1]
+
   # visualize_dataset(climate_dataset)
   
   # Serialize each model and its learned parameters into json, and store in output directory

@@ -15,7 +15,8 @@ dependencies = [
     "scikit-learn>=1.7.2", 
     "xgboost>=3.0.5",
     "matplotlib>=3.10.7",
-    "pygam>=0.10.1"
+    "pygam>=0.10.1",
+    "memory-profiler>=0.61.0"
 ]
 requires-python = "==3.13.*"
 readme = "README.md"

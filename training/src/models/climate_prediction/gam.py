@@ -18,7 +18,7 @@ import os
 
 
 
-from constants.data_file_paths import CLIMATE_DATASET_FILENAME, GAM_TEMP_MODEL_FILENAME, GAM_SEA_LEVEL_MODEL_FILENAME, GAM_VISUALIZATION_FILENAME
+from constants.data_file_paths import CLIMATE_DATASET_V3_FILENAME, GAM_TEMP_MODEL_FILENAME, GAM_SEA_LEVEL_MODEL_FILENAME, GAM_VISUALIZATION_FILENAME
 from constants.climate_prediction_dataset_cols import CO2, FUTURE_SEA_LVL, FUTURE_TEMP, SEA_LVL, TEMP, YEAR
 
 # Display constants
@@ -333,7 +333,7 @@ def visualize_dataset(climate_dataset: DataFrame):
 
 if __name__ == "__main__":
     print("Loading climate dataset...")
-    climate_dataset = load_climate_dataset(CLIMATE_DATASET_FILENAME)
+    climate_dataset = load_climate_dataset(CLIMATE_DATASET_V3_FILENAME)
     
     # Train and test the models
     temp_model, sea_level_model = train_validate_and_test_model(climate_dataset)

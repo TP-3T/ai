@@ -131,7 +131,7 @@ def calc_sea_level_change_from_anomaly(
 def process_required_sea_level_data_and_create_csv():
   annual_change_in_sea_lvl_df: DataFrame = load_data_and_calculate_remaining_sea_level_change_vals()
   #TODO: set in interim climate dataset file
-  annual_change_in_sea_lvl_df.to_csv(SEA_LVL_INTERIM_DATA_FILE_NAME)
+  annual_change_in_sea_lvl_df.to_csv(SEA_LVL_INTERIM_DATA_FILE_NAME) # type: ignore
 
 if __name__ == "__main__":
   """

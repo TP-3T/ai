@@ -22,6 +22,7 @@ __INTERIM_DATA_DIR_NAME:  str = "interim"
 GLOBAL_NOAA_MEAN_ANOMALY_SEA_LEVELS_PATH: str = os.path.join(
   "/", 
   __ABSOLUTE_PATH_TO_PROJECT_DIR, 
+  "training",
   "data", 
   "climate_prediction", 
   __RAW_DATA_DIR_NAME, 
@@ -33,6 +34,7 @@ GLOBAL_NOAA_MEAN_ANOMALY_SEA_LEVELS_PATH: str = os.path.join(
 # SEA_LVL_INTERIM_DATA_FILE_NAME: str = os.path.join(
 #   "/", 
 #   __ABSOLUTE_PATH_TO_PROJECT_DIR, 
+#   "training",
 #   "data", 
 #   "climate_prediction", 
 #   __INTERIM_DATA_DIR_NAME, 
@@ -42,6 +44,7 @@ GLOBAL_NOAA_MEAN_ANOMALY_SEA_LEVELS_PATH: str = os.path.join(
 CLIMATE_DATASET_FILENAME: str = os.path.join(
   "/", 
   __ABSOLUTE_PATH_TO_PROJECT_DIR, 
+  "training",
   "data", 
   "climate_prediction", 
   __INTERIM_DATA_DIR_NAME, 
@@ -51,10 +54,21 @@ CLIMATE_DATASET_FILENAME: str = os.path.join(
 CLIMATE_DATASET_V3_FILENAME: str = os.path.join(
   "/", 
   __ABSOLUTE_PATH_TO_PROJECT_DIR, 
+  "training",
   "data", 
   "climate_prediction", 
   __INTERIM_DATA_DIR_NAME, 
   "interim_climate_dataset_v3.csv"
+)
+
+INTERIM_CLIMATE_DATASET_FROM_1950_FILENAME: str = os.path.join(
+  "/", 
+  __ABSOLUTE_PATH_TO_PROJECT_DIR, 
+  "training",
+  "data", 
+  "climate_prediction", 
+  __INTERIM_DATA_DIR_NAME, 
+  "Interim_Climate_Dataset_from_1950.csv"
 )
 
 # --- Model Ouput File Names
@@ -62,6 +76,7 @@ CLIMATE_DATASET_V3_FILENAME: str = os.path.join(
 __MODEL_OUTPUT_DIR_PATH: list [str] = [
   "/",
   __ABSOLUTE_PATH_TO_PROJECT_DIR,
+  "training",
   "src",
   "models",
   "climate_prediction",
@@ -76,6 +91,11 @@ __GBDT_MODEL_DIR_PATH: list[str] = [
 __GAM_MODEL_DIR_PATH: list[str] = [
   *__MODEL_OUTPUT_DIR_PATH,
   "gam_model"
+]
+
+__POLYNOMIAL_MODEL_DIR_PATH: list[str] = [
+  *__MODEL_OUTPUT_DIR_PATH,
+  "polynomial_model"
 ]
 
 __GBDT_TEMPERATURE_MODEL_FILENAME:  str = "gbdt_temperature_model"
@@ -116,6 +136,26 @@ GAM_SEA_LEVEL_MODEL_FILENAME: str = os.path.join(
 GAM_VISUALIZATION_FILENAME: str = os.path.join(
   *__GAM_MODEL_DIR_PATH,
   "gam_model_performance.png"
+)
+
+POLYNOMIAL_TEMP_MODEL_FILENAME: str = os.path.join(
+  *__POLYNOMIAL_MODEL_DIR_PATH,
+  "polynomial_temperature_model.pkl"
+)
+
+POLYNOMIAL_SEA_LEVEL_MODEL_FILENAME: str = os.path.join(
+  *__POLYNOMIAL_MODEL_DIR_PATH,
+  "polynomial_sea_level_model.pkl"
+)
+
+POLYNOMIAL_CO2_MODEL_FILENAME: str = os.path.join(
+  *__POLYNOMIAL_MODEL_DIR_PATH,
+  "polynomial_co2_model.pkl"
+)
+
+POLYNOMIAL_VISUALIZATION_FILENAME: str = os.path.join(
+  *__POLYNOMIAL_MODEL_DIR_PATH,
+  "polynomial_regression_fits.png"
 )
 
 # === ACTION SUGGESTION ===

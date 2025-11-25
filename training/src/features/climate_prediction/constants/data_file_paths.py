@@ -2,7 +2,6 @@
 
 import os
 
-
 # --- FILES USED FOR INPUT
 
 __ABSOLUTE_PATH_TO_PROJECT_DIR: str = os.getcwd()

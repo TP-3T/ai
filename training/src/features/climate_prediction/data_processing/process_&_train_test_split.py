@@ -47,6 +47,11 @@ def __create_chronologically_split_train_and_test_datasets_as_csvs(climate_datas
     """
     Chronologically split the climate dataset into training and testing sets, 
     and export the dataframes to .csv files in the 'processed' data directory.
+    
+    The first 85% is for training and validation, and last 15% is for testing.
+    
+    We are splitting chronologically because the climate dataset is time series, 
+    and the model shouldn't have knowledge of the future which would happen if we did random splitting.
     """
     num_rows_in_dataset: int = len(climate_dataset)
 

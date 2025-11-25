@@ -15,7 +15,7 @@ CLIMATE_DATASET_FILENAME: str = os.path.join(
   "data", 
   "climate_prediction", 
   __INTERIM_DATA_DIR_NAME, 
-  "Interim_Climate_Dataset_from_1940_baseline_1950_FINAL.csv"
+  "Interim_Climate_Dataset_from_1940_baseline_1950_FINAL_test.csv"
 )
 
 TRAINING_CLIMATE_DATASET_FILEPATH: str = os.path.join(

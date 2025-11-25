@@ -1,8 +1,8 @@
-from features.climate_prediction.constants.climate_prediction_dataset_cols import DELTA_GMSL_AFTER_3M_TO_PREDICT, DELTA_TEMP_AFTER_3M_TO_PREDICT, ROW_ID # type: ignore
+from features.climate_prediction.constants.climate_prediction_dataset_cols import GMSL_AFTER_3M_TO_PREDICT, TEMP_AFTER_3M_TO_PREDICT, ROW_ID # type: ignore
 from pandas import DataFrame # type: ignore
 
 # TARGETS_LIST: list[str] = [DELTA_TEMP_AFTER_3M_TO_PREDICT, DELTA_GMSL_AFTER_3M_TO_PREDICT]
-TARGETS_LIST: list[str] = [DELTA_GMSL_AFTER_3M_TO_PREDICT]
+TARGETS_LIST: list[str] = [GMSL_AFTER_3M_TO_PREDICT]
 # TODO: train 2 models, one for temp, the other for gmsl
 
 def separate_features_and_targets_from_climate_dataset(climate_dataset: DataFrame) -> tuple[DataFrame, DataFrame]:

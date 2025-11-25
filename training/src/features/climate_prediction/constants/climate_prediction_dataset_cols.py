@@ -48,5 +48,5 @@ DELTA_GMSL_FROM_10Y_AGO: str = "Change_in_GMSL_from_10y_ago"
 
 # === TARGETS ===
 
-TEMP_AFTER_3M_TO_PREDICT: str = "TEMP_after_3m_TO_PREDICT"
-GMSL_AFTER_3M_TO_PREDICT: str = "GMSL_after_3m_TO_PREDICT"
+DELTA_TEMP_AFTER_3M_TO_PREDICT: str = "Change_in_TEMP_after_3m_TO_PREDICT"
+DELTA_GMSL_AFTER_3M_TO_PREDICT: str = "Change_in_GMSL_after_3m_TO_PREDICT"

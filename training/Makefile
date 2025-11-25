@@ -13,7 +13,7 @@ help:
 # Install Dev dependencies
 install-dev:
 	@echo Installing dev dependencies ...
-	pip install -e .
+	python -m pip install -e .
 
 # NAME="__init__"
 # # Run

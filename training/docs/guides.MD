@@ -24,3 +24,16 @@ https://xgboost.readthedocs.io/en/stable/tutorials/saving_model.html
 onnxmltools to convert model to onnx format
 https://onnx.ai/sklearn-onnx/auto_tutorial/plot_gexternal_xgboost.html
 https://github.com/onnx/onnxmltools
+
+--------
+
+Cross validation algorithm for time series data (like our climate dataset)
+Cross validation with random sampling/shuffling does not work for time series data (see design doc)
+https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.TimeSeriesSplit.html
+
+Determining the most optimal hyperparameters for an ML model, by testing every combination of them
+sci-kit learn has a package called "GridSearchCV", which uses brute force to determine the best possible combination of hyperparameters
+https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.GridSearchCV.html
+
+Dataset normalization (for the polynomial regression model)
+https://www.datacamp.com/tutorial/normalization-in-machine-learning

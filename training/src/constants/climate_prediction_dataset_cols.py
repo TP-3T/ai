@@ -1,6 +1,0 @@
-YEAR: str = "Year"
-CO2: str = "Global Average CO2 Concentration (ppm)"
-TEMP: str = "Global Average Temperature (deg C)"
-SEA_LVL: str = "Global Average Absolute Sea Level (mm)"
-FUTURE_TEMP: str = "Future Global Avg Temperature (deg C)"
-FUTURE_SEA_LVL: str = "Future Global Average Absolute Sea Level (mm)"

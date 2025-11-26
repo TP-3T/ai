@@ -14,7 +14,7 @@ from xgboost import XGBRegressor
 # as many as needed for fastest training in parallel
 NUM_DEVICE_CPU_CORES: int = -1
 
-VERBOSITY_OF_VALIDATON_LOGS: int = 1
+VERBOSITY_OF_VALIDATON_LOGS: int = 3
 
 ML_MODEL_TECHNIQUE_NAME: str = "xgb"
 RANDOM_STATE_VALUE: int = 42

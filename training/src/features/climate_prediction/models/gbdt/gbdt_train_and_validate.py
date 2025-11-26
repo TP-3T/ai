@@ -14,7 +14,7 @@ from xgboost import XGBRegressor
 # as many as needed for fastest training in parallel
 NUM_DEVICE_CPU_CORES: int = -1
 
-VERBOSITY_OF_VALIDATON_LOGS: int = 3
+VERBOSITY_OF_VALIDATON_LOGS: int = 1
 
 ML_MODEL_TECHNIQUE_NAME: str = "xgb"
 RANDOM_STATE_VALUE: int = 42
@@ -23,7 +23,7 @@ OBJECTIVE_FUNCTION: str = "reg:squarederror" # objective function that optimizes
 
 # Lists of potential hyperparameters for training 
 # (the most optimal combination of these will be determined using grid search)
-LEARNING_RATE:      list[float] = [0.03, 0.05, 0.1]
+LEARNING_RATE:      list[float] = [0.01, 0.03, 0.05]
 NUM_BOOST_ROUNDS:   list[int] = [50, 100, 150, 200] # same as number of trees
 MAX_TREE_DEPTH:     list[int] = [3, 4, 5]
 MIN_CHILD_WEIGHT:   list[int] = [1, 3, 5]
@@ -32,7 +32,7 @@ FEAT_SAMPLING_RATE: list[float] = [0.8, 1.0]
 
 
 
-def train_and_validate_gbdt_model() -> Pipeline:
+def train_and_validate_gbdt_model(target_col_name: str) -> Pipeline:
   """
   Train and validate gbdt model on the training set
   using grid search with time series aware cross validation 
@@ -43,7 +43,7 @@ def train_and_validate_gbdt_model() -> Pipeline:
 
   # === Seperate features and targets from training dataset ===
   (climate_dataset_features_train, \
-   climate_dataset_targets_train) = separate_features_and_targets_from_climate_dataset(training_climate_dataset)
+   climate_dataset_targets_train) = separate_features_and_targets_from_climate_dataset(training_climate_dataset, target_col_name)
   
   # Instantiate gbdt model
   xgb_model: XGBRegressor = XGBRegressor(

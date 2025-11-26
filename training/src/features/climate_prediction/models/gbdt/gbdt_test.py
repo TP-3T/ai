@@ -9,7 +9,7 @@ from sklearn.pipeline import Pipeline
 
 
 
-def test_gbdt_model(gbdt_model: Pipeline):
+def test_gbdt_model(gbdt_model: Pipeline, target_col_name: str):
   """
   Test the gbdt model on the testing set using RMSE.
   """
@@ -18,7 +18,7 @@ def test_gbdt_model(gbdt_model: Pipeline):
 
   # === Seperate features and targets from training dataset ===
   (climate_dataset_features_test, \
-   climate_dataset_targets_test) = separate_features_and_targets_from_climate_dataset(testing_climate_dataset)
+   climate_dataset_targets_test) = separate_features_and_targets_from_climate_dataset(testing_climate_dataset, target_col_name)
 
   # === Predict features from test set ===
   predicted_targets_test = gbdt_model.predict(climate_dataset_features_test) # type: ignore

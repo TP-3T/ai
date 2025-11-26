@@ -10,7 +10,6 @@ from pandas import DataFrame
 from sklearn.model_selection import GridSearchCV, TimeSeriesSplit
 from sklearn.pipeline import Pipeline
 from xgboost import XGBRegressor
-from features.climate_prediction.constants.messages import DATASET_LOADED_MSG, LOADING_DATASET_MSG # type: ignore
 
 # as many as needed for fastest training in parallel
 NUM_DEVICE_CPU_CORES: int = -1
@@ -45,10 +44,37 @@ def train_and_validate_gbdt_model() -> Pipeline:
   # === Seperate features and targets from training dataset ===
   (climate_dataset_features_train, \
    climate_dataset_targets_train) = separate_features_and_targets_from_climate_dataset(training_climate_dataset)
+  
+  # Instantiate gbdt model
+  xgb_model: XGBRegressor = XGBRegressor(
+    objective=OBJECTIVE_FUNCTION,
+    tree_method="hist",
+    eval_metric="rmse",
+    random_state=RANDOM_STATE_VALUE,
+  )
+
+  # Hyperparams
+  param_grid: dict[str, str] = { # type: ignore
+    "xgb__n_estimators": NUM_BOOST_ROUNDS,
+    "xgb__learning_rate": LEARNING_RATE,
+    "xgb__max_depth": MAX_TREE_DEPTH,
+    "xgb__min_child_weight": MIN_CHILD_WEIGHT,
+    "xgb__subsample": SUBSAMPLING_RATE,
+    "xgb__colsample_bytree": FEAT_SAMPLING_RATE,
+  }
+
+  # A Pipeline allows for assembling 
+  # a series steps that are done automatically using sci-kit learn methods 
+  # (passed into the steps array)
+  ml_pipeline = Pipeline(
+    steps=[
+      (ML_MODEL_TECHNIQUE_NAME, xgb_model)
+    ]
+  )
 
   # Perform multiple iterations of training and validaton - using a time-series aware cross validation technique called walk-forward validation
 
-  # --- Walk-forward validation ---
+  # --- Walk-forward validation (using time series cross-validator) ---
 
     # - Multiple iterations of training and then validating a model, 
     #   and each validation process produces a root mean squared error (RMSE)
@@ -84,31 +110,6 @@ def train_and_validate_gbdt_model() -> Pipeline:
   # Use Grid Search cross validaton method to determine the 
   # most optimal hyperparameter combination for gbdt training 
   # ===
-
-  xgb_model: XGBRegressor = XGBRegressor(
-    objective=OBJECTIVE_FUNCTION,
-    tree_method="hist",
-    eval_metric="rmse",
-    random_state=RANDOM_STATE_VALUE,
-  )
-
-  param_grid: dict[str, str] = { # type: ignore
-    "xgb__n_estimators": NUM_BOOST_ROUNDS,
-    "xgb__learning_rate": LEARNING_RATE,
-    "xgb__max_depth": MAX_TREE_DEPTH,
-    "xgb__min_child_weight": MIN_CHILD_WEIGHT,
-    "xgb__subsample": SUBSAMPLING_RATE,
-    "xgb__colsample_bytree": FEAT_SAMPLING_RATE,
-  }
-
-  # The purpose of the pipeline is to assemble 
-  # several steps that can be cross-validated together 
-  # while setting different parameters
-  ml_pipeline = Pipeline(
-    steps=[
-      (ML_MODEL_TECHNIQUE_NAME, xgb_model)
-    ]
-  )
 
   # Perform grid search, which will:
   # - Run MULTIPLE ITERATIONS of walk-forward validation (one for EVERY combination of model hyperparameters),

@@ -25,7 +25,7 @@ def test_gbdt_model(gbdt_model: Pipeline, target_col_name: str):
 
   print("\n=== Sample predictions vs actuals (test set) ===")
   print("Actual\tPredicted")
-  for actual, predicted in zip(climate_dataset_targets_test.values[:10], predicted_targets_test[:10]):
+  for actual, predicted in zip(climate_dataset_targets_test.values, predicted_targets_test):
     print(f"{float(actual):.4f}\t{float(predicted):.4f}")
 
   rmse: float = root_mean_squared_error(climate_dataset_targets_test, predicted_targets_test)

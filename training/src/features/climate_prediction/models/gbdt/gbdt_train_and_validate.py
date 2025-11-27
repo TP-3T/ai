@@ -113,7 +113,8 @@ def train_and_validate_gbdt_model(target_col_name: str) -> Pipeline:
 
   # Perform grid search, which will:
   # - Run MULTIPLE ITERATIONS of walk-forward validation (one for EVERY combination of model hyperparameters),
-  #   which the result of this is a list of average RMSEs
+  #   which will result in a list of average RMSEs
+  # - Chooses the combination  with the lowest average RMSE
   grid_search: GridSearchCV = GridSearchCV(
     estimator=ml_pipeline,
     param_grid=param_grid,

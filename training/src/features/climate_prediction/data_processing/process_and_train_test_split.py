@@ -6,10 +6,10 @@ import pandas as pd
 from pandas import DataFrame
 import numpy as np
 
-# the chronologically last 15% of the dataset is used for testing
-TESTING_SET_FRACTION: float = 0.15
+# the chronologically last 10% of the dataset is used for testing
+TESTING_SET_FRACTION: float = 0.10
 
-# the chronologically first 85% of the dataset is used for training
+# the chronologically first 90% of the dataset is used for training
 TRAINING_SET_FRACTION: float = 1.0 - TESTING_SET_FRACTION
 
 
@@ -43,12 +43,14 @@ def __remove_unused_features_excl_row_id(climate_dataset: DataFrame):
 
 
 
-def __create_chronologically_split_train_and_test_datasets_as_csvs(climate_dataset: DataFrame):
+def __create_chronologically_split_train_and_test_datasets_as_csvs(climate_dataset: DataFrame) -> tuple[DataFrame, DataFrame]:
     """
     Chronologically split the climate dataset into training and testing sets, 
     and export the dataframes to .csv files in the 'processed' data directory.
+
+    Also returns the training and testing set dataframes in a tuple (first is training set, second is testing).
     
-    The first 85% is for training and validation, and last 15% is for testing.
+    The first 90% is for training and validation, and last 15% is for testing.
     
     We are splitting chronologically because the climate dataset is time series, 
     and the model shouldn't have knowledge of the future which would happen if we did random splitting.
@@ -62,8 +64,8 @@ def __create_chronologically_split_train_and_test_datasets_as_csvs(climate_datas
 
     # * dataset already sorted by date
 
-    # training set is from the first year up to and incl the year row at 85%
-    # testing set is from after the year row at 85% up to and incl the last year%
+    # training set is from the first year up to and incl the year row at 90%
+    # testing set is from after the year row at 90% up to and incl the last year%
     training_set: DataFrame = climate_dataset.iloc[:num_rows_in_training_set].copy()
     testing_set: DataFrame = climate_dataset.iloc[num_rows_in_training_set:].copy()
 
@@ -72,16 +74,22 @@ def __create_chronologically_split_train_and_test_datasets_as_csvs(climate_datas
     training_set.to_csv(TRAINING_CLIMATE_DATASET_FILEPATH, index=False, encoding=CSV_ENCODING)
     testing_set.to_csv(TESTING_CLIMATE_DATASET_FILEPATH, index=False, encoding=CSV_ENCODING)
 
+    return (training_set, testing_set)
 
 
-def process_and_train_test_split():
-    
+
+def process_and_train_test_split() -> tuple[DataFrame, DataFrame]:
+    """
+    Preprocess the dataset, and split the dataset into training and testing sets.
+    Outputs the resulting sets as a tuple of DataFrames (the first df is training set, second is testing set),
+    and saves the datasets to csv files in the \"processed\" directory.
+    """
     climate_dataset: DataFrame = __load_interim_climate_dataset()
     climate_dataset_used_features: DataFrame = __remove_unused_features_excl_row_id(climate_dataset)
     # (climate_dataset_features, climate_dataset_targets) = __separate_features_and_targets(climate_dataset)
 
     #  For both the features and targets 
-    __create_chronologically_split_train_and_test_datasets_as_csvs(climate_dataset_used_features)
+    return __create_chronologically_split_train_and_test_datasets_as_csvs(climate_dataset_used_features)
 
 
 

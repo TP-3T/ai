@@ -3,7 +3,9 @@ from pandas import DataFrame # type: ignore
 
 def separate_features_and_targets_from_climate_dataset(climate_dataset: DataFrame, target_col_name: str) -> tuple[DataFrame, DataFrame]:
   """
-  Removes row id from the climate prediction dataset, the separates the climate dataset dataframe into two dataframes, one for features and the other for targets. 
+  Remove row id from the climate prediction dataset, 
+  then separates the climate dataset dataframe into two dataframes, 
+  one for features and the other for targets. 
   
   :param climate_dataset: The climate dataset.
   :type climate_dataset: DataFrame
@@ -15,7 +17,7 @@ def separate_features_and_targets_from_climate_dataset(climate_dataset: DataFram
 
   targets_list: list[str] = [target_col_name]
 
-  print(target_col_name)
+  print(f"Separating features from the target - {target_col_name}")
 
   climate_dataset_features:   DataFrame = climate_dataset_no_row_ids.drop(columns=targets_list)
   climate_dataset_targets:    DataFrame = climate_dataset_no_row_ids[targets_list]

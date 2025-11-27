@@ -93,8 +93,8 @@ def train_and_validate_gbdt_model(target_col_name: str) -> Pipeline:
     # Num model "instances" trained == num iterations == number of times the model type is retrained
       # (each model has the same hyperparameter combination)
 
-    # - In each iteration, a different "instance" of the same type of model is trained and validated on a different proportion of the initial 85% dataset (NOT INCLUDING THE TESTING SUB-DATASET)
-    # - In each iteration, a proportion of the 85% dataset is taken (a different proportion for each iteration).
+    # - In each iteration, a different "instance" of the same type of model is trained and validated on a different proportion of the initial 90% dataset (NOT INCLUDING THE TESTING SUB-DATASET)
+    # - In each iteration, a proportion of the 90% dataset is taken (a different proportion for each iteration).
     # - That proportion is then split Chronologically into train and validation sets, 
     #   with the past data being used for training, and future data being used for validation
 

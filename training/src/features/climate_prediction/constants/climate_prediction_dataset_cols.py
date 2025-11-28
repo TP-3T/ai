@@ -46,6 +46,10 @@ DELTA_GMSL_FROM_12M_AGO: str = "Change_in_GMSL_from_12m_ago"
 DELTA_GMSL_FROM_5Y_AGO: str = "Change_in_GMSL_from_5y_ago"
 DELTA_GMSL_FROM_10Y_AGO: str = "Change_in_GMSL_from_10y_ago"
 
+MONTHLY_SEA_SURFACE_TEMP_ANOMALY: str = "Monthly sea surface temperature anomalies"
+MONTHLY_SEA_SURFACE_TEMP_ANOMALY_LOWER_BOUND: str = "Monthly sea surface temperature anomalies (lower bound)"
+MONTHLY_SEA_SURFACE_TEMP_ANOMALY_UPPER_BOUND: str = "Monthly sea surface temperature anomalies (upper bound)"
+
 # === TARGETS ===
 
 # FUTURE_TEMP_TARGET_COL_NAME: str = "TEMP_after_3m_TO_PREDICT"

@@ -1,6 +1,6 @@
 # Python Version
 
-When nagivating into the "training" project directory, pyenv (or pyenv-win) detects the `.python-version` file and automatically switches its local Python intepreter to the version specified in that file (assuming that version is installed via pyenv)
+When nagivating into one of the Python project directories (ex. /training or /physics-model), pyenv (or pyenv-win) detects the `.python-version` file and automatically switches its local Python intepreter to the version specified in that file (assuming that version is installed via pyenv)
 
 ------
 
@@ -22,4 +22,3 @@ Outside of project folder
 In project folder
 
 ![alt text](imgs/image-1.png)
-

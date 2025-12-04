@@ -1,5 +1,8 @@
-# Python project for building the machine learning models
+# Python project for implementing a physics model
 
+(Called Energy Balance model)
+
+## Table of Contents
 - [Makefile](#makefile)
 - [Commands](#commands)
 - [Installation Steps](#installation-steps)

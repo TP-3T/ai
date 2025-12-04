@@ -13,12 +13,13 @@ help:
 # Install Dev dependencies
 install-dev:
 	@echo Installing dev dependencies ...
-	pip install -e .
+	python -m pip install -e .
 
-# Run (likely not needed since modules will be ran individually)
-run:
-	@echo Running project ...
-	pyenv exec python __init__.py
+# NAME="__init__"
+# # Run
+# run:
+# 	@echo Running project ...
+# 	python $(NAME).py
 
 # Run Linter
 lint:
@@ -38,5 +39,5 @@ venv:
 	@echo Creating virtual Python environment ...
 	pyenv exec python -m venv .venv
 	@echo Virtual environment created. Activate it with the appropriate command for your OS:
-	@echo "./.venv/Scripts/activate"	# If on Windows
-	@echo "source .venv/bin/activate" 	# If on macOS/Linux
+	@echo "./.venv/Scripts/activate"	If on Windows
+	@echo "source .venv/bin/activate" If on macOS/Linux

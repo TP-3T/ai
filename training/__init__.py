@@ -1,10 +1,8 @@
-"""Main file (might delete this if not needed)."""
+"""Main module in AI training project."""
 
-def main() -> str:
-  """Print and return a greeting."""
-  greeting: str = "hello"
-  print(greeting)
-  return greeting
+# def main():
+#   """Main driver function."""
+#   print("Hello")
 
-if __name__ == "__main__":
-  main()
+# if __name__ == "__main__":
+#   main()

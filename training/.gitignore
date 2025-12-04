@@ -6,4 +6,6 @@ venv/
 .venv/
 
 # .egg-info directory (contains package metadata)
-*.egg-info
+*.egg-info/
+
+__pycache__/

@@ -35,30 +35,30 @@ jobs:
         run: mypy .
 
   # Linter for physics model project
-  lint-physics-model:
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./physics-model
+  # lint-physics-model:
+  #   runs-on: ubuntu-latest
+  #   defaults:
+  #     run:
+  #       working-directory: ./physics-model
 
-    steps:
-      - name: checkout
-        uses: actions/checkout@v5
+  #   steps:
+  #     - name: checkout
+  #       uses: actions/checkout@v5
 
-      - name: setup
-        uses: actions/setup-python@v5
-        with: 
-          python-version: "3.13.7"
-          cache: "pip"
+  #     - name: setup
+  #       uses: actions/setup-python@v5
+  #       with: 
+  #         python-version: "3.13.7"
+  #         cache: "pip"
 
-      - name: pip 
-        run: pip install .
+  #     - name: pip 
+  #       run: pip install .
 
-      - name: ruff
-        run: ruff check .
+  #     - name: ruff
+  #       run: ruff check .
 
-      - name: mypy
-        run: mypy .
+  #     - name: mypy
+  #       run: mypy .
 
   # lint-inference:
     

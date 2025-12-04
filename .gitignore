@@ -7,3 +7,5 @@
 
 # .egg-info directory (contains package metadata)
 *.egg-info
+
+*.pyc

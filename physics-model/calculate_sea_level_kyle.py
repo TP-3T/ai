@@ -15,7 +15,7 @@ __ICE_MELT_SENSITIVITY: float = 1.5  # mm/year/°C
 __TOTAL_SENSITIVITY: float = __THERMAL_EXPANSION_SENSITIVITY + __ICE_MELT_SENSITIVITY  # 3.0 mm/year/°C
 
 def calculate_sea_level_rise(
-    current_temperature_celcius: float,
+    future_temperature_celcius: float,
     time_elapsed_years: float
 ) -> float:
     """
@@ -32,7 +32,7 @@ def calculate_sea_level_rise(
     """
     
     # Calculate temperature anomaly relative to pre-industrial baseline
-    temperature_anomaly: float = current_temperature_celcius - __TEMPERATURE_PREINDUSTRIAL
+    temperature_anomaly: float = future_temperature_celcius - __TEMPERATURE_PREINDUSTRIAL
     
     # No sea level rise if temperature is at or below pre-industrial levels
     if temperature_anomaly <= 0:

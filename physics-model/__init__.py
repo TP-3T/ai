@@ -44,7 +44,7 @@ def calculate_future_values(current_co2_concentration_ppm: float, current_temper
 
   # calculate sea level rise based on the future temperature
   sea_level_rise_mm: float = calculate_sea_level_rise(
-    current_temperature_celcius=future_temperature_celcius,
+    future_temperature_celcius=future_temperature_celcius,
     time_elapsed_years=change_in_time_years
   )
   

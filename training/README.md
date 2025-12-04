@@ -1,5 +1,6 @@
 # Python project for building the machine learning models
 
+## Table of Contents
 - [Makefile](#makefile)
 - [Commands](#commands)
 - [Installation Steps](#installation-steps)

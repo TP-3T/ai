@@ -8,4 +8,5 @@
 # .egg-info directory (contains package metadata)
 *.egg-info/
 
-*__pycache__/
+__pycache__/
+*.pyc

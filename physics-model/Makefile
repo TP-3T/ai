@@ -23,7 +23,13 @@ install-dev:
 
 # Run Linter
 lint:
-	@echo Running linter (TODO) ...
+	@echo Running linter ...
+	ruff check .
+
+# Run Static Type Checker
+type_check:
+	@echo Running static type checker ...
+	mypy .
 
 # Run Test
 test:

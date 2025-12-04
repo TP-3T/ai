@@ -1,0 +1,39 @@
+[project]
+name = "physics_model"
+version = "0.1.0"
+description = "Climate prediction physics project"
+authors = [
+    {name = "Jason L", email = "email1@email.ca"},
+    {name = "Kyle", email = "email2@email.ca"},
+    {name = "Keith", email = "email3@email.ca"},
+]
+dependencies = [
+    "mypy>=1.14.1", 
+    "ruff>=0.9.2"
+]
+requires-python = "==3.13.*"
+readme = "README.md"
+license = {text = "MIT"}
+
+[tool.mypy]
+#More readings https://mypy.readthedocs.io/en/stable/config_file.html
+warn_unreachable = true
+warn_return_any = true
+warn_unused_configs = true
+warn_incomplete_stub = true
+disallow_untyped_calls = true
+disallow_untyped_defs = true
+
+[tool.ruff]
+line-length = 79
+indent-width = 4
+
+[tool.ruff.lint]
+# info about rules can be found at https://docs.astral.sh/ruff/rules/
+select = ["E", "F", "B", "W", "N", "ANN", "D"]
+ignore = ["D212", "D203"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+line-ending = "auto"

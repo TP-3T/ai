@@ -1,4 +1,4 @@
-# Python project for building the machine learning / deep learning models
+# Python project for building the machine learning models
 
 - [Makefile](#makefile)
 - [Commands](#commands)

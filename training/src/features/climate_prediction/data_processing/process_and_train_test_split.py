@@ -14,7 +14,7 @@ TRAINING_SET_FRACTION: float = 1.0 - TESTING_SET_FRACTION
 
 
 
-def __load_interim_climate_dataset() -> DataFrame:
+def load_interim_climate_dataset() -> DataFrame:
     """
     Load the climate dataset from CSV file.
     
@@ -23,7 +23,7 @@ def __load_interim_climate_dataset() -> DataFrame:
     """
     print(f"\n{LOADING_DATASET_MSG}...")
     
-    # Load dataset - adjust path as needed for your project structure
+    # Load dataset
     climate_dataset: DataFrame = pd.read_csv(CLIMATE_DATASET_FILENAME, encoding=CSV_ENCODING) # type: ignore
     
     print(f"{DATASET_LOADED_MSG}")
@@ -78,20 +78,24 @@ def __create_chronologically_split_train_and_test_datasets_as_csvs(climate_datas
 
 
 
-def process_and_train_test_split() -> tuple[DataFrame, DataFrame]:
+def process_and_train_test_split(keep_year: bool) -> tuple[DataFrame, DataFrame]:
     """
     Preprocess the dataset, and split the dataset into training and testing sets.
     Outputs the resulting sets as a tuple of DataFrames (the first df is training set, second is testing set),
     and saves the datasets to csv files in the \"processed\" directory.
     """
-    climate_dataset: DataFrame = __load_interim_climate_dataset()
-    climate_dataset_used_features: DataFrame = __remove_unused_features_excl_row_id(climate_dataset)
-    # (climate_dataset_features, climate_dataset_targets) = __separate_features_and_targets(climate_dataset)
+    climate_dataset: DataFrame = load_interim_climate_dataset()
 
-    #  For both the features and targets 
-    return __create_chronologically_split_train_and_test_datasets_as_csvs(climate_dataset_used_features)
+    if not keep_year:
+        climate_dataset_used_features: DataFrame = __remove_unused_features_excl_row_id(climate_dataset)
+        # (climate_dataset_features, climate_dataset_targets) = __separate_features_and_targets(climate_dataset)
 
-
+        #  For both the features and targets 
+        return __create_chronologically_split_train_and_test_datasets_as_csvs(climate_dataset_used_features)
+    
+    else:
+        return __create_chronologically_split_train_and_test_datasets_as_csvs(climate_dataset)
 
 if __name__ == "__main__":
-    process_and_train_test_split()
+    process_and_train_test_split(keep_year=False) # uncomment this to remove year from the processed training and testing datasets
+    # process_and_train_test_split(keep_year=True) # uncomment this if want to keep year in the training and testing sets (for dataset visualization)

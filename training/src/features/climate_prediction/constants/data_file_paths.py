@@ -18,42 +18,47 @@ CLIMATE_DATASET_FILENAME: str = os.path.join(
   "Interim_Climate_Dataset_from_1940_baseline_1950_FINAL_absolute_no_change_values.csv"
 )
 
-TRAINING_CLIMATE_DATASET_FILEPATH: str = os.path.join(
+PROCESSED_DATA_DIR_PATH: list[str] = [
   "/", 
   __ABSOLUTE_PATH_TO_PROJECT_DIR, 
   "data", 
   "climate_prediction", 
   __PROCESSED_DATA_DIR_NAME, 
+]
+
+TRAINING_CLIMATE_DATASET_FILEPATH: str = os.path.join(
+  *PROCESSED_DATA_DIR_PATH,
   "climate_prediction_training.csv"
 )
 
 TESTING_CLIMATE_DATASET_FILEPATH: str = os.path.join(
-  "/", 
-  __ABSOLUTE_PATH_TO_PROJECT_DIR, 
-  "data", 
-  "climate_prediction", 
-  __PROCESSED_DATA_DIR_NAME, 
+  *PROCESSED_DATA_DIR_PATH,
   "climate_prediction_testing.csv"
 )
 
 #  --- FILES USED FOR OUTPUT ---
 
-__MODEL_OUTPUT_DIR_PATH: list [str] = [
+__MODEL_OUTPUT_DIR_PATH: list[str] = [
   "/", 
   __ABSOLUTE_PATH_TO_PROJECT_DIR, 
   "src",
   "features",
   "climate_prediction",
-  "output",
+  "output"
+]
+
+__GBDT_MODEL_OUTPUT_DIR_PATH: list[str] = [
+  *__MODEL_OUTPUT_DIR_PATH,
+  "gbdt_model"
 ]
 
 GBDT_MODEL_FILE_NAME: str = os.path.join(
-  *__MODEL_OUTPUT_DIR_PATH,
+  *__GBDT_MODEL_OUTPUT_DIR_PATH,
   "xgboost_model.onnx"
 )
 
-FEATURE_MAPPING_FILE_NAME: str = os.path.join(
-  *__MODEL_OUTPUT_DIR_PATH,
+GBDT_FEATURE_MAPPING_FILE_NAME: str = os.path.join(
+  *__GBDT_MODEL_OUTPUT_DIR_PATH,
   "xgboost_model_feat_mappings.json"
 )
 

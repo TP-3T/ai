@@ -4,11 +4,13 @@ Uses Min-Max scaling to normalize climate prediction datasets to [0, 1] range.
 Implements a Pipeline approach for reusability.
 """
 
+from features.climate_prediction.constants.data_file_paths import PROCESSED_DATA_DIR_PATH, TRAINING_CLIMATE_DATASET_FILEPATH, TESTING_CLIMATE_DATASET_FILEPATH # type: ignore
 import pandas as pd
-import numpy as np
+import numpy as np # type: ignore
+from pandas import DataFrame
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.pipeline import Pipeline
-import joblib
+import joblib # type: ignore
 import os
 
 
@@ -27,7 +29,7 @@ class ClimateDataNormalizer:
         self.feature_columns = None
         self.excluded_columns = ['ROW_ID']  # Columns to exclude from normalization
         
-    def fit_transform(self, df, exclude_cols=None):
+    def fit_transform(self, df: DataFrame, exclude_cols: list[str] | None = None):
         """
         Fit the scaler on the data and transform it.
         
@@ -54,13 +56,13 @@ class ClimateDataNormalizer:
         df_normalized = df.copy()
         
         # Fit and transform the feature columns
-        df_normalized[self.feature_columns] = self.pipeline.fit_transform(
+        df_normalized[self.feature_columns] = self.pipeline.fit_transform( # type: ignore
             df[self.feature_columns]
         )
         
         return df_normalized
     
-    def transform(self, df):
+    def transform(self, df: DataFrame):
         """
         Transform data using the already fitted scaler.
         
@@ -74,20 +76,20 @@ class ClimateDataNormalizer:
         pandas.DataFrame
             Normalized dataframe
         """
-        if self.feature_columns is None:
+        if self.feature_columns is None: # type: ignore
             raise ValueError("Pipeline must be fitted before transform. Use fit_transform first.")
         
         # Create a copy to avoid modifying original
-        df_normalized = df.copy()
+        df_normalized = df.copy() # type: ignore
         
         # Transform using the fitted pipeline
-        df_normalized[self.feature_columns] = self.pipeline.transform(
-            df[self.feature_columns]
+        df_normalized[self.feature_columns] = self.pipeline.transform( # type: ignore
+            df[self.feature_columns] # type: ignore
         )
         
-        return df_normalized
+        return df_normalized # type: ignore
     
-    def inverse_transform(self, df):
+    def inverse_transform(self, df: DataFrame):
         """
         Convert normalized data back to original scale.
         
@@ -101,28 +103,28 @@ class ClimateDataNormalizer:
         pandas.DataFrame
             Denormalized dataframe
         """
-        if self.feature_columns is None:
+        if self.feature_columns is None: # type: ignore
             raise ValueError("Pipeline must be fitted before inverse_transform.")
         
         # Create a copy
         df_denormalized = df.copy()
         
         # Inverse transform
-        df_denormalized[self.feature_columns] = self.pipeline.inverse_transform(
-            df[self.feature_columns]
+        df_denormalized[self.feature_columns] = self.pipeline.inverse_transform( # type: ignore
+            df[self.feature_columns] # type: ignore
         )
         
         return df_denormalized
     
-    def save_pipeline(self, filepath):
+    def save_pipeline(self, filepath: str):
         """Save the fitted pipeline for future use."""
-        joblib.dump(self.pipeline, filepath)
+        joblib.dump(self.pipeline, filepath) # type: ignore
         print(f"Pipeline saved to: {filepath}")
     
     @staticmethod
-    def load_pipeline(filepath):
+    def load_pipeline(filepath: str):
         """Load a previously saved pipeline."""
-        pipeline = joblib.load(filepath)
+        pipeline = joblib.load(filepath) # type: ignore
         print(f"Pipeline loaded from: {filepath}")
         return pipeline
 
@@ -131,13 +133,15 @@ def main():
     """Main function to normalize climate datasets."""
     
     # Get the directory where this script is located
-    script_dir = os.path.dirname(os.path.abspath(__file__))
+    processed_data_dir: str = os.path.join(
+        *PROCESSED_DATA_DIR_PATH
+    )
     
-    # File paths relative to script location
-    training_file = os.path.join(script_dir, 'climate_prediction_training.csv')
-    testing_file = os.path.join(script_dir, 'climate_prediction_testing.csv')
+    # # File paths relative to script location
+    # training_file = os.path.join(processed_data_dir, 'climate_prediction_training.csv')
+    # testing_file = os.path.join(processed_data_dir, 'climate_prediction_testing.csv')
     
-    output_dir = os.path.join(script_dir, 'normalized_data')
+    output_dir = os.path.join(processed_data_dir, 'normalized_data')
     os.makedirs(output_dir, exist_ok=True)
     
     normalized_training_file = os.path.join(output_dir, 'climate_prediction_training_normalized.csv')
@@ -150,8 +154,8 @@ def main():
     
     # Load datasets
     print("\n1. Loading datasets...")
-    df_train = pd.read_csv(training_file, encoding='utf-8-sig')
-    df_test = pd.read_csv(testing_file, encoding='utf-8-sig')
+    df_train = pd.read_csv(TRAINING_CLIMATE_DATASET_FILEPATH, encoding='utf-8-sig') # type: ignore
+    df_test = pd.read_csv(TESTING_CLIMATE_DATASET_FILEPATH, encoding='utf-8-sig') # type: ignore
     
     print(f"   - Training data shape: {df_train.shape}")
     print(f"   - Testing data shape: {df_test.shape}")
@@ -167,11 +171,11 @@ def main():
     
     # Fit on training data and transform
     print("\n4. Fitting scaler on training data and transforming...")
-    df_train_normalized = normalizer.fit_transform(df_train)
+    df_train_normalized = normalizer.fit_transform(df_train) # type: ignore
     
     # Transform testing data using the same scaler
     print("\n5. Transforming testing data using fitted scaler...")
-    df_test_normalized = normalizer.transform(df_test)
+    df_test_normalized = normalizer.transform(df_test) # type: ignore
     
     # Display normalized data statistics
     print("\n6. Normalized data statistics (first 5 features):")
@@ -196,12 +200,12 @@ def main():
     
     # Save the pipeline for future use
     print("\n9. Saving normalization pipeline...")
-    normalizer.save_pipeline(pipeline_file)
+    normalizer.save_pipeline(pipeline_file) # type: ignore
     
     # Demonstrate inverse transform
     print("\n10. Testing inverse transform (first 3 rows):")
     print("-" * 70)
-    df_test_denormalized = normalizer.inverse_transform(df_test_normalized.head(3))
+    df_test_denormalized = normalizer.inverse_transform(df_test_normalized.head(3)) # type: ignore
     print("Original values (CO2, TEMP, GMSL):")
     print(df_test.head(3)[['CO2 (ppm)', 'TEMP (deg C)', 'Absolute GMSL (mm) relative to Jan 1950']])
     print("\nDenormalized values (CO2, TEMP, GMSL):")

@@ -1,0 +1,1 @@
+"""Module for constants used in AI/ML training for climate prediction feature."""

@@ -1,6 +1,7 @@
 """
-Second iteration of climate prediction model training using the gradient boosted decision tree algorithm.
-Contains a function to train the model with walk-forward validation, that exports the resulting model file to a csv.
+Second iteration of climate prediction model training using the gradient boosted decision trees algorithm.
+Contains a function that trains the model, using Grid Search and 
+expanding window cross validation to optimize hyperparameters.
 """
 
 from features.climate_prediction.constants.data_file_paths import TRAINING_CLIMATE_DATASET_FILEPATH # type: ignore
@@ -9,7 +10,7 @@ import pandas as pd
 from pandas import DataFrame
 from sklearn.model_selection import GridSearchCV, TimeSeriesSplit
 from sklearn.pipeline import Pipeline
-from xgboost import XGBRegressor
+from xgboost import XGBRegressor # type: ignore
 
 # as many as needed for fastest training in parallel
 NUM_DEVICE_CPU_CORES: int = -1
@@ -36,7 +37,7 @@ def train_and_validate_gbdt_model(target_col_name: str) -> Pipeline:
   """
   Train and validate gbdt model on the training set
   using grid search with time series aware cross validation 
-  (called walk-forward validation).
+  (called expanding window cross validation).
   """
   # === Load the training climate prediction dataset ===
   training_climate_dataset: DataFrame = pd.read_csv(TRAINING_CLIMATE_DATASET_FILEPATH) # type: ignore
@@ -72,9 +73,9 @@ def train_and_validate_gbdt_model(target_col_name: str) -> Pipeline:
     ]
   )
 
-  # Perform multiple iterations of training and validaton - using a time-series aware cross validation technique called walk-forward validation
+  # Perform multiple iterations of training and validaton - using a time-series aware cross validation technique called expanding window cross validation
 
-  # --- Walk-forward validation (using time series cross-validator) ---
+  # --- Expanding window cross validation (using time series aware cross-validator) ---
 
     # - Multiple iterations of training and then validating a model, 
     #   and each validation process produces a root mean squared error (RMSE)
@@ -88,15 +89,15 @@ def train_and_validate_gbdt_model(target_col_name: str) -> Pipeline:
         # Basically it ensures that we try training and validating that type of model on all rows of the data AT LEAST ONCE 
         # (not the same model, but is the same type of model), 
         # compared to a single train validation set split, where
-        # the type of model only gets trained on only a specific subset of the data, and validated on the other section
+        # the type of model only gets trained on a specific subset of the data, and validated on the other section
 
     # Num model "instances" trained == num iterations == number of times the model type is retrained
       # (each model has the same hyperparameter combination)
 
-    # - In each iteration, a different "instance" of the same type of model is trained and validated on a different proportion of the initial 90% dataset (NOT INCLUDING THE TESTING SUB-DATASET)
-    # - In each iteration, a proportion of the 90% dataset is taken (a different proportion for each iteration).
-    # - That proportion is then split Chronologically into train and validation sets, 
-    #   with the past data being used for training, and future data being used for validation
+    # - In each iteration, a different "instance" of the same type of model is trained and validated on a different proportion of the full training dataset
+    # - In each iteration, a proportion of the training set is taken (a different proportion for each iteration).
+    #   - That proportion is then split chronologically into train and validation sets, 
+    #     with the past data being used for training, and future data being used for validation
 
     # - The validation process in each iteration produces a RMSE
     # - After all iterations, the RMSE's are averaged together, 
@@ -112,9 +113,15 @@ def train_and_validate_gbdt_model(target_col_name: str) -> Pipeline:
   # ===
 
   # Perform grid search, which will:
-  # - Run MULTIPLE ITERATIONS of walk-forward validation (one for EVERY combination of model hyperparameters),
+  # - Run MULTIPLE ITERATIONS of expanding window cross validation (one for EVERY combination of model hyperparameters),
   #   which will result in a list of average RMSEs
-  # - Chooses the combination  with the lowest average RMSE
+  # - Chooses the hyperparameter combination with the lowest average RMSE
+
+  # - Using the resulting list of average RMSE's, 
+  #   it chooses the combination of hyperparams that resulted in the lowest average RMSE value,
+  #   and then retrains the model on the full training dataset, using that combination of hyperparam values.
+  #   In GridSearchCV implementation it stores the trained model in a property called best_estimator_
+
   grid_search: GridSearchCV = GridSearchCV(
     estimator=ml_pipeline,
     param_grid=param_grid,
@@ -131,11 +138,9 @@ def train_and_validate_gbdt_model(target_col_name: str) -> Pipeline:
     climate_dataset_targets_train
   )
 
-  # === Select the hyperparameters combination that produced the "best" average mean validation scores ===
 
-    # - Using the resulting list of average RMSE's, 
-    #   it chooses the combination of hyperparams that resulted in the lowest RMSE value
-    #   and sets the best model after refitting it on the entire training dataset
+
+  # === Select the model with the hyperparameter combination that produced the "best" average mean validation scores ===
 
   gbdt_model_optimal_hyperparams: Pipeline = grid_search.best_estimator_
 

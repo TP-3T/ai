@@ -1,3 +1,8 @@
+"""
+This module has functions to test the trained climate prediction model. 
+The main function used for proper model testing is test_regression_ml_model.
+"""
+
 from features.climate_prediction.data_processing.separate_features_and_targets import separate_features_and_targets_from_climate_dataset # type: ignore
 from sklearn.metrics import r2_score, root_mean_squared_error # type: ignore
 from features.climate_prediction.constants.data_file_paths import TESTING_CLIMATE_DATASET_FILEPATH # type: ignore
@@ -9,9 +14,9 @@ import numpy as np
 
 # === Evaluate once on the test set === 
 
-def test_gbdt_model(gbdt_model: Pipeline, target_col_name: str):
+def test_regression_ml_model(ml_model: Pipeline, target_col_name: str):
   """
-  Test the gbdt model on the testing set using RMSE.
+  Test a trained regression based ML model on the testing set using RMSE and R^2 as performance metrics.
   """
   # === Load the testing climate prediction dataset ===
   testing_climate_dataset: DataFrame = pd.read_csv(TESTING_CLIMATE_DATASET_FILEPATH) # type: ignore
@@ -21,7 +26,7 @@ def test_gbdt_model(gbdt_model: Pipeline, target_col_name: str):
    climate_dataset_targets_test) = separate_features_and_targets_from_climate_dataset(testing_climate_dataset, target_col_name)
 
   # === Predict features from test set ===
-  predicted_targets_test = gbdt_model.predict(climate_dataset_features_test) # type: ignore
+  predicted_targets_test = ml_model.predict(climate_dataset_features_test) # type: ignore
 
   print("\n=== Sample predictions vs actuals (test set) ===")
   print("Actual\tPredicted")
@@ -36,7 +41,10 @@ def test_gbdt_model(gbdt_model: Pipeline, target_col_name: str):
   print(f"R²  : {r2:.4f}")
 
 
-# === Below is for other testing ===
+
+# Below is LLM generated code where we manually create synthetic data points 
+# within the range of the dataset to see if the prediction result would be reasonable
+
 
 
 def test_gbdt_model_interpolation(gbdt_model: Pipeline, target_col_name: str, num_samples: int = 100):
@@ -46,7 +54,7 @@ def test_gbdt_model_interpolation(gbdt_model: Pipeline, target_col_name: str, nu
   then uses the model to predict the target values.
   """
   
-  training_climate_dataset: DataFrame = pd.read_csv(TRAINING_CLIMATE_DATASET_FILEPATH)
+  training_climate_dataset: DataFrame = pd.read_csv(TRAINING_CLIMATE_DATASET_FILEPATH) # type: ignore
   
   (training_features, training_targets) = separate_features_and_targets_from_climate_dataset(
     training_climate_dataset, target_col_name
@@ -69,7 +77,7 @@ def test_gbdt_model_interpolation(gbdt_model: Pipeline, target_col_name: str, nu
       size=num_samples
     )
   
-  predicted_targets_interpolation = gbdt_model.predict(synthetic_features)
+  predicted_targets_interpolation = gbdt_model.predict(synthetic_features) # type: ignore
   
   print("\n=== Synthetic feature samples (first 5) ===")
   print(synthetic_features.head())
@@ -79,20 +87,19 @@ def test_gbdt_model_interpolation(gbdt_model: Pipeline, target_col_name: str, nu
   for i, predicted in enumerate(predicted_targets_interpolation[:20]):
     print(f"{i}\t{float(predicted):.4f}")
   
-  pred_min = predicted_targets_interpolation.min()
-  pred_max = predicted_targets_interpolation.max()
-  pred_mean = predicted_targets_interpolation.mean()
-  pred_std = predicted_targets_interpolation.std()
+  pred_min = predicted_targets_interpolation.min() # type: ignore
+  pred_max = predicted_targets_interpolation.max() # type: ignore
+  pred_mean = predicted_targets_interpolation.mean() # type: ignore
+  pred_std = predicted_targets_interpolation.std() # type: ignore
   
   training_target_min = training_targets.min()
   training_target_max = training_targets.max()
   training_target_mean = training_targets.mean()
   
-  if isinstance(training_target_min, pd.Series):
-    training_target_min = training_target_min.values[0]
-    training_target_max = training_target_max.values[0]
-    training_target_mean = training_target_mean.values[0]
-  
+  training_target_min = training_target_min.values[0]
+  training_target_max = training_target_max.values[0]
+  training_target_mean = training_target_mean.values[0]
+
   print(f"\n=== Interpolation prediction statistics ===")
   print(f"Number of synthetic samples: {num_samples}")
   print(f"\nPredicted target range:")
@@ -124,7 +131,7 @@ def test_multiple_synthetic_points(gbdt_model: Pipeline, target_col_name: str, n
   Includes R² and RMSE statistics by comparing predictions to similar points in training data.
   """
   
-  training_climate_dataset: DataFrame = pd.read_csv(TRAINING_CLIMATE_DATASET_FILEPATH)
+  training_climate_dataset: DataFrame = pd.read_csv(TRAINING_CLIMATE_DATASET_FILEPATH) # type: ignore
   
   (training_features, training_targets) = separate_features_and_targets_from_climate_dataset(
     training_climate_dataset, target_col_name
@@ -143,14 +150,14 @@ def test_multiple_synthetic_points(gbdt_model: Pipeline, target_col_name: str, n
       min_val = training_features[feature_name].min()
       max_val = training_features[feature_name].max()
       
-      synthetic_value = np.random.uniform(low=min_val, high=max_val)
+      synthetic_value = np.random.uniform(low=min_val, high=max_val) # type: ignore
       synthetic_point[feature_name] = synthetic_value
     
-    synthetic_points.append(synthetic_point)
+    synthetic_points.append(synthetic_point) # type: ignore
   
   synthetic_df = pd.DataFrame(synthetic_points)
   
-  predictions = gbdt_model.predict(synthetic_df)
+  predictions = gbdt_model.predict(synthetic_df) # type: ignore
   
   display_count = min(10, num_points)
   print("="*100)
@@ -172,29 +179,25 @@ def test_multiple_synthetic_points(gbdt_model: Pipeline, target_col_name: str, n
   
   from sklearn.metrics import r2_score, root_mean_squared_error
   
-  actual_predictions_on_training = gbdt_model.predict(training_features)
+  actual_predictions_on_training = gbdt_model.predict(training_features) # type: ignore
   
   training_target_min = training_targets.min()
   training_target_max = training_targets.max()
   training_target_mean = training_targets.mean()
   
-  if isinstance(training_target_min, pd.Series):
-    training_target_min = training_target_min.values[0]
-    training_target_max = training_target_max.values[0]
-    training_target_mean = training_target_mean.values[0]
-  
-  if isinstance(training_targets, pd.DataFrame):
-    training_targets_values = training_targets.values.ravel()
-  else:
-    training_targets_values = training_targets.values
+  training_target_min = training_target_min.values[0]
+  training_target_max = training_target_max.values[0]
+  training_target_mean = training_target_mean.values[0]
+
+  training_targets_values = training_targets.values.ravel()
   
   r2_training = r2_score(training_targets_values, actual_predictions_on_training)
   rmse_training = root_mean_squared_error(training_targets_values, actual_predictions_on_training)
   
-  pred_min = predictions.min()
-  pred_max = predictions.max()
-  pred_mean = predictions.mean()
-  pred_std = predictions.std()
+  pred_min = predictions.min() # type: ignore
+  pred_max = predictions.max() # type: ignore
+  pred_mean = predictions.mean() # type: ignore
+  pred_std = predictions.std() # type: ignore
   
   within_range_count = np.sum(
     (predictions >= training_target_min) & 
@@ -225,11 +228,11 @@ def test_multiple_synthetic_points(gbdt_model: Pipeline, target_col_name: str, n
   print(f"  Predictions within training range: {within_range_count}/{num_points} ({within_range_pct:.1f}%)")
   
   if within_range_count == num_points:
-    print(f"  ✓ All synthetic predictions are realistic (within training range)")
+    print(f"All synthetic predictions are realistic (within training range)")
   elif within_range_pct >= 90:
-    print(f"  ✓ Most synthetic predictions are realistic")
+    print(f"Most synthetic predictions are realistic")
   else:
-    print(f"  ⚠ Warning: Some predictions fall outside training range")
+    print(f"Warning: Some predictions fall outside training range")
   
   print("="*100)
   

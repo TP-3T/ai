@@ -40,7 +40,7 @@
 # Gradient Boosting:
 #   - An ensemble technique in ML
 #   - Does not learn from data independently
-#   - It instead combines the predictions of multiple weak learners (models that performs slightly better than randomly guessing)
+#   - It instead effectively combines the predictions of multiple weak learners (models that performs slightly better than randomly guessing)
 #     into one more accurate strong learner
 #       - An example of weak learner is a decision tree
 #   - The strong learner is a combination of many weak learners and is used for the same set of features and target combination (different data points though)
